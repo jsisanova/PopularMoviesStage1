@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PopularMoviesStage1</string>
+    <string name="label_app_name_main_activity">Popular Movies</string>
 </resources>
