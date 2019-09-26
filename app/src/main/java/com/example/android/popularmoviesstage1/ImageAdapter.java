@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -15,7 +14,6 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
-//    private String[] mData;
     private List<String> mImageList;
 
     private LayoutInflater mInflater;
@@ -31,12 +29,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
 
     // stores and recycles views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-//        TextView myTextView;
         ImageView myImageView;
 
         ViewHolder(View itemView) {
             super(itemView);
-//            myTextView = itemView.findViewById(R.id.movie_text);
             myImageView = itemView.findViewById(R.id.image);
             itemView.setOnClickListener(this);
         }
@@ -60,23 +56,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     // binds the data to the ImageView in each item
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        holder.myTextView.setText(mData[position]);
         final String path = mImageList.get(position);
 
         Picasso.get()
                 .load(path)
-//                .centerCrop()
-//                .resize(250,250)
                 .fit()
-                .error(R.mipmap.ic_launcher_round)
-                .placeholder(R.mipmap.ic_launcher_round)
+                .error(R.drawable.ghost)
+                .placeholder(R.drawable.ghost)
                 .into(holder.myImageView);
     }
 
     // total number of items
     @Override
     public int getItemCount() {
-//        return mData.length;
         return mImageList.size();
     }
 

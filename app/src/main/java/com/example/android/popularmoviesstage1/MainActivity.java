@@ -21,15 +21,10 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // set up the RecyclerView
+        // Set up the RecyclerView
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
 
-        int numberOfColumns = 2;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-
-        // data to populate the RecyclerView with
-        String[] data = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"};
-
+        // Data to populate the RecyclerView with
         List<String> imageList = new ArrayList<>();
         imageList.add("https://farm5.staticflickr.com/4403/36538794702_83fd8b63b7_c.jpg");
         imageList.add("https://farm5.staticflickr.com/4354/35684440714_434610d1d6_c.jpg");
@@ -52,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
         adapter = new ImageAdapter(this, imageList);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
+
+        int numberOfColumns = 2;
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
     }
 
     @Override
