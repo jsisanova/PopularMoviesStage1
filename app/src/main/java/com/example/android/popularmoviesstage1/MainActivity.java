@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
 
     @Override
     public void onItemClick(View view, int position) {
-        String toastMessage = "You clicked on item at cell position " + position;
+        String toastMessage = "You clicked on item at cell position " + position + "Image link: " + adapter.getItem(position);
         Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
         Log.i("TAG", "You clicked on item at cell position " + position);
     }

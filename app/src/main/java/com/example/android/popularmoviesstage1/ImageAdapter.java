@@ -71,13 +71,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .error(R.mipmap.ic_launcher_round)
                 .placeholder(R.mipmap.ic_launcher_round)
                 .into(holder.myImageView);
-
-        holder.myImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //handle click event on image
-            }
-        });
     }
 
     // total number of items
