@@ -1,20 +1,35 @@
 package com.example.android.popularmoviesstage1;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements ImageAdapter.ItemClickListener {
 
     ImageAdapter adapter;
+    RecyclerView recyclerView;
+    Movie[] movies;
+
+    private final String POPULAR_QUERY = "popular";
+    private final String TOP_RATED_QUERY = "top_rated";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,40 +37,113 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
         setContentView(R.layout.activity_main);
 
         // Set up the RecyclerView
-        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        recyclerView = findViewById(R.id.recycler_view);
 
-        // Data to populate the RecyclerView with
-        List<String> imageList = new ArrayList<>();
-        imageList.add("https://farm5.staticflickr.com/4403/36538794702_83fd8b63b7_c.jpg");
-        imageList.add("https://farm5.staticflickr.com/4354/35684440714_434610d1d6_c.jpg");
-        imageList.add("https://farm5.staticflickr.com/4301/35690634410_f5d0e312cb_c.jpg");
-        imageList.add("https://farm4.staticflickr.com/3854/32890526884_7dc068fedd_c.jpg");
-        imageList.add("https://farm8.staticflickr.com/7787/18143831616_a239c78056_c.jpg");
-        imageList.add("https://farm9.staticflickr.com/8745/16657401480_57653ac8b0_c.jpg");
-        imageList.add("https://farm3.staticflickr.com/2917/14144166232_44613c53c7_c.jpg");
-        imageList.add("https://farm8.staticflickr.com/7453/13960410788_3dd02b7a02_c.jpg");
-        imageList.add("https://farm1.staticflickr.com/920/29297133218_de38a7e4c8_c.jpg");
-        imageList.add("https://farm2.staticflickr.com/1788/42989123072_6720c9608d_c.jpg");
-        imageList.add("https://farm1.staticflickr.com/888/29062858008_89851766c9_c.jpg");
-        imageList.add("https://farm2.staticflickr.com/1731/27940806257_8067196b41_c.jpg");
-        imageList.add("https://farm1.staticflickr.com/884/42745897912_ff65398e38_c.jpg");
-        imageList.add("https://farm2.staticflickr.com/1829/27971893037_1858467f9a_c.jpg");
-        imageList.add("https://farm2.staticflickr.com/1822/41996470025_414452d7a0_c.jpg");
-        imageList.add("https://farm2.staticflickr.com/1793/42937679651_3094ebb2b9_c.jpg");
-        imageList.add("https://farm1.staticflickr.com/892/42078661914_b940d96992_c.jpg");
-
-        adapter = new ImageAdapter(this, imageList);
-        adapter.setClickListener(this);
-        recyclerView.setAdapter(adapter);
-
+        // Use GridLayoutManager
         int numberOfColumns = 2;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+
+        // Set up spinner
+        Spinner mySpinner = findViewById(R.id.spinner);
+        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        // If Most Popular is selected
+                        new FetchDataAsyncTask().execute(POPULAR_QUERY);
+                        break;
+                    case 1:
+                        // If Highest Rating is selected
+                        new FetchDataAsyncTask().execute(TOP_RATED_QUERY);
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //Auto-generated method stub
+            }
+        });
     }
 
+    // Toast message after clicking on single item in RecycleView
     @Override
     public void onItemClick(View view, int position) {
-        String toastMessage = "You clicked on item at cell position " + position + ".\nImage link: " + adapter.getItem(position);
+        String toastMessage = "You clicked on item at cell position " + position;
         Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
-        Log.i("TAG", "You clicked on item at cell position " + position);
+    }
+
+    // Change string of movie data to an ARRAY OD MOVIE OBJECTS
+    public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
+        // JSON FILTERS
+        final String RESULTS = "results";
+
+        final String ORIGINAL_TITLE = "original_title";
+        final String POSTER_PATH = "poster_path";
+        final String VOTER_AVERAGE = "vote_average";
+        final String RELEASE_DATE = "release_date";
+        final String OVERVIEW = "overview";
+
+        // Get results as an array
+        JSONObject moviesJson = new JSONObject(moviesJsonResults);
+        JSONArray resultsArray = moviesJson.getJSONArray(RESULTS);
+
+        // Create array of Movie objects that stores data from the JSON string
+        movies = new Movie[resultsArray.length()];
+
+        // Iterate through movies and get data
+        for (int i = 0; i < resultsArray.length(); i++) {
+            // Initialize each object before it can be used
+            movies[i] = new Movie();
+
+            // Object contains all tags we're looking for
+            JSONObject movieInfo = resultsArray.getJSONObject(i);
+
+            // Store data in movie object
+            movies[i].setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE));
+            movies[i].setPosterPath(movieInfo.getString(POSTER_PATH));
+            movies[i].setOverview(movieInfo.getString(OVERVIEW));
+            movies[i].setVoterAverage(movieInfo.getDouble(VOTER_AVERAGE));
+            movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE));
+        }
+        return movies;
+    }
+
+    // Use AsyncTask to fetch movie data
+    public class FetchDataAsyncTask extends AsyncTask<String, Void, Movie[]> {
+        public FetchDataAsyncTask() {
+            super();
+        }
+
+        @Override
+        protected Movie[] doInBackground(String... params) {
+            // Holds data returned from the API
+            String movieResults;
+
+            try {
+                URL url = JsonUtils.buildUrl(params);
+                movieResults = JsonUtils.makeHttpRequest(url);
+
+                if(movieResults == null) {
+                    return null;
+                }
+            } catch (IOException e) {
+                return null;
+            }
+
+            try {
+                // Call method to change string of movie data to an ARRAY OD MOVIE OBJECTS
+                return changeMoviesDataToArray (movieResults);
+            } catch (JSONException e) {
+                e.printStackTrace ();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Movie[] movies) {
+            adapter = new ImageAdapter(getApplicationContext(), movies);
+            adapter.setClickListener(MainActivity.this);
+            recyclerView.setAdapter(adapter);
+        }
     }
 }

@@ -15,7 +15,7 @@ public class DetailActivity extends AppCompatActivity {
 
         ImageView myImage = (ImageView) findViewById(R.id.poster_iv);
         Picasso.get()
-               .load("http://i.imgur.com/DvpvklR.png")
-               .into(myImage);
+                .load("http://i.imgur.com/DvpvklR.png")
+                .into(myImage);
     }
 }

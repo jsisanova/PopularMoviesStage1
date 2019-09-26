@@ -10,24 +10,22 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
 
-    private List<String> mImageList;
+    private final Movie[] mMovie;
 
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
     private final Context mContext;
 
-    // data is passed into the constructor
-    ImageAdapter(Context context, List imageList) {
+    // Pass data into the constructor
+    public ImageAdapter(Context context, Movie[] movie) {
         this.mInflater = LayoutInflater.from(context);
         this.mContext = context;
-        this.mImageList = imageList;
+        this.mMovie = movie;
     }
 
-    // stores and recycles views as they are scrolled off screen
+    // Store and recycle views as they are scrolled off screen
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView myImageView;
 
@@ -45,7 +43,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         }
     }
 
-    // inflates the cell layout from xml when needed
+    // Inflate the cell layout from xml when needed
     @Override
     @NonNull
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -53,10 +51,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return new ViewHolder(view);
     }
 
-    // binds the data to the ImageView in each item
+    // Bind the data to the ImageView in each item
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        final String path = mImageList.get(position);
+        final String path = mMovie[position].getPosterPath();
 
         Picasso.get()
                 .load(path)
@@ -66,23 +64,18 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .into(holder.myImageView);
     }
 
-    // total number of items
+    // Total number of items
     @Override
     public int getItemCount() {
-        return mImageList.size();
+        return mMovie.length;
     }
 
-    // convenience method for getting data at click position
-    String getItem(int id) {
-        return mImageList.get(id);
-    }
-
-    // allows clicks events to be caught
+    // Allows clicks events to be caught
     void setClickListener(ItemClickListener itemClickListener) {
         this.mClickListener = itemClickListener;
     }
 
-    // parent activity will implement this method to respond to click events
+    // Parent activity will implement this method to respond to click events
     public interface ItemClickListener {
         void onItemClick(View view, int position);
     }

@@ -10,7 +10,8 @@
         android:entries="@array/sort_options"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:paddingLeft="8dp"
+        android:paddingLeft="@dimen/spinner_padding_left"
+        android:backgroundTint="@color/textColor"
         android:popupBackground="@color/backgroundColor" />
 
     <!--Add RecyclerView-->
