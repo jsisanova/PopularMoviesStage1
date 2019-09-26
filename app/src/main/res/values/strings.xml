@@ -2,4 +2,10 @@
     <string name="app_name">PopularMoviesStage1</string>
     <string name="label_action_bar_main_activity">Popular Movies</string>
     <string name="label_action_bar_detail_activity">Movie Details</string>
+
+    <!--Strings in spinner to toggle the sort order of the movies by: most popular, highest rated-->
+    <string-array name="sort_options">
+        <item>Most Popular</item>
+        <item>Highest Rated</item>
+    </string-array>
 </resources>

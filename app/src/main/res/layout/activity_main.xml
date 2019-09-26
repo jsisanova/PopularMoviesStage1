@@ -4,9 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <!--Spinner design-->
+    <Spinner
+        android:id="@+id/spinner"
+        android:entries="@array/sort_options"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:paddingLeft="8dp"
+        android:popupBackground="@color/backgroundColor" />
+
     <!--Add RecyclerView-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_marginTop="48dp"/>
 </RelativeLayout>
