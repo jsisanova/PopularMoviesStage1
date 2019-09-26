@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">PopularMoviesStage1</string>
-    <string name="label_app_name_main_activity">Popular Movies</string>
+    <string name="label_action_bar_main_activity">Popular Movies</string>
+    <string name="label_action_bar_detail_activity">Movie Details</string>
 </resources>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Wrap Layout in ScrollView in case there is eg. longer overwiew text-->
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.android.popularmoviesstage1.DetailActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/general_padding"
+        android:orientation="vertical">
+
+        <!-- Original title of the movie-->
+        <TextView
+            android:id="@+id/title_tv"
+            tools:text="I try tu put here very long Title of the movie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="25sp"
+            android:textAllCaps="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!--Movie poster-->
+            <ImageView
+                android:id="@+id/poster_iv"
+                android:layout_width="175dp"
+                android:layout_height="250dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/general_padding"
+                android:orientation="vertical">
+
+                <!--User rating of the movie-->
+                <TextView
+                    android:id="@+id/rating_tv"
+                    tools:text="Rating \n7/10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="30dp"
+                    android:textSize="16sp"
+                    android:textAllCaps="true" />
+
+                <!--Release date of the movie-->
+                <TextView
+                    android:id="@+id/release_date_tv"
+                    tools:text="Release Date \n10.8.2019"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="50dp"
+                    android:textAllCaps="true" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--Plot synopsis of the movie-->
+        <TextView
+            android:id="@+id/overview_tv"
+            tools:text="texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/general_padding"/>
+    </LinearLayout>
+</ScrollView>

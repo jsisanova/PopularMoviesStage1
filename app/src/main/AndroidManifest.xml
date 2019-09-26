@@ -13,12 +13,17 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:label="@string/label_app_name_main_activity">
+            android:label="@string/label_action_bar_main_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".DetailActivity"
+            android:label="@string/label_action_bar_detail_activity"
+            android:parentActivityName=".MainActivity"/>
     </application>
 </manifest>
