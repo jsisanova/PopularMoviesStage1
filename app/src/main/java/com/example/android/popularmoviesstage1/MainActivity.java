@@ -5,11 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -18,9 +15,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements ImageAdapter.ItemClickListener {
 
@@ -28,8 +23,8 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
     RecyclerView recyclerView;
     Movie[] movies;
 
-    private final String POPULAR_QUERY = "popular";
-    private final String TOP_RATED_QUERY = "top_rated";
+    private final String MOST_POPULAR_QUERY = "popular";
+    private final String HIGHEST_RATED_QUERY = "top_rated";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,25 +40,30 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
 
         // Set up spinner
         Spinner mySpinner = findViewById(R.id.spinner);
-        mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        // If Most Popular is selected
-                        new FetchDataAsyncTask().execute(POPULAR_QUERY);
-                        break;
-                    case 1:
-                        // If Highest Rating is selected
-                        new FetchDataAsyncTask().execute(TOP_RATED_QUERY);
-                        break;
+        if (isOnline()) {
+
+            mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position) {
+                        case 0:
+                            // If Most Popular is selected
+                            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+                            break;
+                        case 1:
+                            // If Highest Rating is selected
+                            new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
+                            break;
+                    }
                 }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //Auto-generated method stub
-            }
-        });
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    //Auto-generated method stub
+                }
+            });
+        } else {
+            Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // Toast message after clicking on single item in RecycleView
@@ -145,5 +145,23 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
             adapter.setClickListener(MainActivity.this);
             recyclerView.setAdapter(adapter);
         }
+    }
+
+    /***
+     * Make sure the app does not crash when there is no network connection (ping a server)
+     * source: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+     ***/
+
+    public boolean isOnline() {
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        }
+        catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+
+        return false;
     }
 }
