@@ -1,12 +1,14 @@
 package com.example.android.popularmoviesstage1;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -51,7 +53,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         return new ViewHolder(view);
     }
 
-    // Bind the data to the ImageView in each item
+    // Bind the data to the view in each item (invoked by Layout Manager)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final String path = mMovie[position].getPosterPath();
@@ -62,6 +64,19 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
                 .error(R.drawable.ghost)
                 .placeholder(R.drawable.ghost)
                 .into(holder.myImageView);
+
+        // Create your intent object inside the first activity and use the putExtra method to add the whole class as an extra.
+        // (at this point parcelable starts serializing your object). If this works, the new activity will open.
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                intent.putExtra("movie", mMovie[position]);
+                mContext.startActivity(intent);
+
+                Toast.makeText(v.getContext(), "Recycle Click " + position, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     // Total number of items
