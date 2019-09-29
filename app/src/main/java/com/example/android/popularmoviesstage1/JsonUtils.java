@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage1;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,7 +11,7 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class JsonUtils {
-    final static String MOVIEDB_BASE_URL = "http://api.themoviedb.org/3/movie";
+    final static String MOVIEDB_BASE_URL = "https://api.themoviedb.org/3/movie";
     final static String API_KEY = "59ae123a0e789fced4ba91868cd10abb";
 
     public static URL buildUrl(String[] query) {
@@ -44,6 +45,9 @@ public class JsonUtils {
             } else {
                 return null;
             }
+        } catch (Exception e){
+            Log.e("fail", "failed", e);
+            return null;
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();

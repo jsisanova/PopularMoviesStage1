@@ -1,14 +1,23 @@
 package com.example.android.popularmoviesstage1;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.AndroidRuntimeException;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,5 +163,60 @@ public class MainActivity extends AppCompatActivity {
         catch (InterruptedException e) { e.printStackTrace(); }
 
         return false;
+    }
+
+
+
+    // Make the Adapter an inner class of the MainActivity (so it has access to the activity directly and you can start another one easily).
+    // Otherwise AndroidRuntimeException occurs, when you initialise the adapter this way: adapter = new ImageAdapter(getApplicationContext(), movies);
+    // and when you then call startActivity() from outside of an Activity context (getApplicationContext() would be a wrong type of context in this case).
+    public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
+        private Movie[] mMovie;
+        private LayoutInflater mInflater;
+        private final Context mContext;
+        // Pass data into the constructor
+        public ImageAdapter(Context context, Movie[] movie) {
+            this.mInflater = LayoutInflater.from(context);
+            this.mContext = context;
+            this.mMovie = movie;
+        }
+        // Store and recycle views as they are scrolled off screen
+        public class ViewHolder extends RecyclerView.ViewHolder  {
+            ImageView myImageView;
+            ViewHolder(View itemView) {
+                super(itemView);
+                myImageView = itemView.findViewById(R.id.image);
+            }
+        }
+        // Inflate the cell layout from xml when needed (invoked by Layout Manager
+        @NonNull
+        @Override
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = mInflater.inflate(R.layout.single_item_image, parent, false);
+            return new ViewHolder(view);
+        }
+        // Bind the data to the view in each item (invoked by Layout Manager)
+        @Override
+        public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            final String path = mMovie[position].getPosterPath();
+            Picasso.get()
+                    .load(path)
+                    .fit()
+                    .error(R.drawable.ghost)
+                    .placeholder(R.drawable.ghost)
+                    .into(holder.myImageView);
+            // Create your intent object inside the first activity and use the putExtra method to add the whole class as an extra.
+            // (at this point parcelable starts serializing your object). If this works, the new activity will open.
+            holder.itemView.setOnClickListener(view -> {
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                intent.putExtra("movie", mMovie[position]);
+                MainActivity.this.startActivity(intent);
+            });
+        }
+        // Total number of items
+        @Override
+        public int getItemCount() {
+            return mMovie.length;
+        }
     }
 }
