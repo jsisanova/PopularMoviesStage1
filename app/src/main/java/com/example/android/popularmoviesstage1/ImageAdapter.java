@@ -36,16 +36,17 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
         }
     }
 
-    // Inflate the cell layout from xml when needed
+    // Inflate the cell layout from xml when needed (invoked by Layout Manager
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = mInflater.inflate(R.layout.single_item_image, parent, false);
         return new ViewHolder(view);
     }
 
     // Bind the data to the view in each item (invoked by Layout Manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final String path = mMovie[position].getPosterPath();
 
         Picasso.get()

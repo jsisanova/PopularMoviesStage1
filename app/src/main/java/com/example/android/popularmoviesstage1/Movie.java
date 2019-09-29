@@ -78,7 +78,7 @@ public class Movie implements Parcelable {
     }
 
     // This method binds everything together. There’s little needed to do here as the createFromParcel method will return newly populated object.
-    // Creator - used when un-parceling our parcle (creating the object)
+    // Creator - used when un-parceling our parcel (creating the object)
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
         @Override
         public Movie createFromParcel(Parcel parcel) {
@@ -91,7 +91,7 @@ public class Movie implements Parcelable {
         }
     };
 
-    // Return hashcode of object - this method doesn’t do much.
+    // Return hashcode of object - this method does not do much.
     @Override
     public int describeContents() {
         return hashCode();
