@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
         // Set up spinner
         Spinner mySpinner = findViewById(R.id.spinner);
         if (isOnline()) {
-
             mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
