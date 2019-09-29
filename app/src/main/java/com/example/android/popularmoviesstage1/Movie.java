@@ -2,7 +2,6 @@ package com.example.android.popularmoviesstage1;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Property;
 
 public class Movie implements Parcelable {
     private String originalTitle;

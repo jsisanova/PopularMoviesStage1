@@ -17,7 +17,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements ImageAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity {
 
     ImageAdapter adapter;
     RecyclerView recyclerView;
@@ -64,13 +64,6 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
         } else {
             Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    // Toast message after clicking on single item in RecycleView
-    @Override
-    public void onItemClick(View view, int position) {
-        String toastMessage = "You clicked on item at cell position " + position;
-        Toast.makeText(this, toastMessage, Toast.LENGTH_SHORT).show();
     }
 
     // Change string of movie data to an ARRAY OD MOVIE OBJECTS
@@ -142,7 +135,6 @@ public class MainActivity extends AppCompatActivity implements ImageAdapter.Item
 
         protected void onPostExecute(Movie[] movies) {
             adapter = new ImageAdapter(getApplicationContext(), movies);
-            adapter.setClickListener(MainActivity.this);
             recyclerView.setAdapter(adapter);
         }
     }

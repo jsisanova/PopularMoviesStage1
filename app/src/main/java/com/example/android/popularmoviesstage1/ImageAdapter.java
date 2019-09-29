@@ -17,7 +17,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     private final Movie[] mMovie;
 
     private LayoutInflater mInflater;
-    private ItemClickListener mClickListener;
     private final Context mContext;
 
     // Pass data into the constructor
@@ -28,20 +27,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     }
 
     // Store and recycle views as they are scrolled off screen
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder  {
         ImageView myImageView;
 
         ViewHolder(View itemView) {
             super(itemView);
             myImageView = itemView.findViewById(R.id.image);
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (mClickListener != null) {
-                mClickListener.onItemClick(view, getAdapterPosition());
-            }
         }
     }
 
@@ -83,15 +74,5 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return mMovie.length;
-    }
-
-    // Allows clicks events to be caught
-    void setClickListener(ItemClickListener itemClickListener) {
-        this.mClickListener = itemClickListener;
-    }
-
-    // Parent activity will implement this method to respond to click events
-    public interface ItemClickListener {
-        void onItemClick(View view, int position);
     }
 }
