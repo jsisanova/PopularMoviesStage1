@@ -18,6 +18,10 @@ Enter the API key in the file JsonUtils.java where it says "Enter your API key h
       plot synopsis (called overview in the api)
       user rating (called vote_average in the api)
       release date
+      
+![image](https://user-images.githubusercontent.com/30228915/65838364-a89fde80-e302-11e9-90a7-faaadf754b5b.png)
+![image](https://user-images.githubusercontent.com/30228915/65838425-28c64400-e303-11e9-8048-3debc54d9ec4.png)
+
 
 ## What Will I Learn?
 - to fetch data from the Internet with theMovieDB API
