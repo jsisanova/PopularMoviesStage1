@@ -12,7 +12,7 @@ import java.util.Scanner;
 
 public class JsonUtils {
     final static String MOVIEDB_BASE_URL = "https://api.themoviedb.org/3/movie";
-    final static String API_KEY = "Enter your API key here";
+    final static String API_KEY = "59ae123a0e789fced4ba91868cd10abb";
 
     public static URL buildUrl(String[] query) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()

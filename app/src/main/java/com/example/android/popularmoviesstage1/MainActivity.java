@@ -2,8 +2,10 @@ package com.example.android.popularmoviesstage1;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
@@ -27,12 +30,13 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-    ImageAdapter adapter;
-    RecyclerView recyclerView;
-    Movie[] movies;
+    private ImageAdapter adapter;
+    private RecyclerView recyclerView;
+    private Movie[] movies;
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
+    private View coordinator_layout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +73,26 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
+            coordinator_layout = (View) findViewById(R.id.coordinator_layout);
+            Snackbar snackbar = Snackbar
+                    .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
+                            snackbar1.show();
+                        }
+                    });
+            // Changing message text color ("RETRY")
+            snackbar.setActionTextColor(Color.RED);
+
+            // Changing action button text color ("Currently there is no internet connection.")
+            View sbView = snackbar.getView();
+            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
+
+            snackbar.show();
+//            Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
         }
     }
 
