@@ -22,8 +22,8 @@ public class DetailActivity extends AppCompatActivity {
         TextView releaseDate = (TextView) findViewById (R.id.release_date_tv);
         TextView overview = (TextView) findViewById (R.id.overview_tv);
 
-        // Collect the intent object and extract the property class that’s been converted into a parcel in the second activity.
-        // Once you’ve done this you can call the standard methods to get the data like property name, price and description.
+        // Collect the intent object and extract the movie class that’s been converted into a parcel in the second activity.
+        // Once you’ve done this you can call the standard methods to get the data like movie title, poster etc..
         Intent intent = getIntent();
         if (intent == null) {
             closeOnError();

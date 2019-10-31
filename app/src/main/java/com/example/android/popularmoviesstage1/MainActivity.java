@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
+    // To use Snackbar
     private View coordinator_layout;
 
     @Override
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Change string of movie data to an ARRAY OD MOVIE OBJECTS
+    // Change string of movie data to an ARRAY OF MOVIE OBJECTS
     public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
         // JSON FILTERS
         final String RESULTS = "results";
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity {
                 myImageView = itemView.findViewById(R.id.image);
             }
         }
-        // Inflate the cell layout from xml when needed (invoked by Layout Manager
+        // Inflate the cell layout from xml when needed (invoked by Layout Manager)
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
