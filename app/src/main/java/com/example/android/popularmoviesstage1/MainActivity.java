@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageAdapter adapter;
     private RecyclerView recyclerView;
     private Movie[] movies;
+    Spinner mySpinner;
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         // Set up spinner
-        Spinner mySpinner = findViewById(R.id.spinner);
+        mySpinner = findViewById(R.id.spinner);
         if (isOnline()) {
             mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -95,6 +96,15 @@ public class MainActivity extends AppCompatActivity {
             snackbar.show();
 //            Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mySpinner = findViewById (R.id.spinner);
+        // Get the text on the item selected in spinner
+        String spinnerSelection = mySpinner.getSelectedItem().toString ();
+        outState.putString("sort_spinner_selection", spinnerSelection);
     }
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS
