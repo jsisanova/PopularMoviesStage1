@@ -3,14 +3,19 @@ package com.example.android.popularmoviesstage1;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -33,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageAdapter adapter;
     private RecyclerView recyclerView;
     private Movie[] movies;
-    Spinner mySpinner;
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
@@ -52,28 +56,9 @@ public class MainActivity extends AppCompatActivity {
         int numberOfColumns = 2;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
-        // Set up spinner
-        mySpinner = findViewById(R.id.spinner);
-        if (isOnline()) {
-            mySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    switch (position) {
-                        case 0:
-                            // If Most Popular is selected
-                            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
-                            break;
-                        case 1:
-                            // If Highest Rating is selected
-                            new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
-                            break;
-                    }
-                }
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    //Auto-generated method stub
-                }
-            });
+        if (isOnline ()) {
+            //Default to Popular Query Sort
+            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
         } else {
             coordinator_layout = (View) findViewById(R.id.coordinator_layout);
             Snackbar snackbar = Snackbar
@@ -101,11 +86,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mySpinner = findViewById (R.id.spinner);
-        // Get the text on the item selected in spinner
-        String spinnerSelection = mySpinner.getSelectedItem().toString ();
-        outState.putString("sort_spinner_selection", spinnerSelection);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu
+        MenuInflater inflater = getMenuInflater ();
+        inflater.inflate(R.menu.menu_main, menu);
+
+        // Return true to display this menu
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Get the ID from the MenuItem
+        int id = item.getItemId ();
+        if (id == R.id.most_popular_setting) {
+            new FetchDataAsyncTask ().execute(MOST_POPULAR_QUERY);
+        } else if (id == R.id.highest_rated_setting) {
+            new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
+        } else {
+            // TODO: Add later my favorite movies intent
+            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+        }
+        return super.onOptionsItemSelected (item);
+    }
+
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS
     public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {

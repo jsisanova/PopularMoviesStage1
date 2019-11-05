@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Preference menu to toggle the sort order of the movies by: most popular, highest rated, and to show favorite movies -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/most_popular_setting"
+        android:title="@string/most_popular_setting"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/highest_rated_setting"
+        android:title="@string/highest_rated_setting"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/favorite_movies_setting"
+        android:title="@string/favorite_movies_setting"
+        android:orderInCategory="1"
+        app:showAsAction="never" />
+</menu>

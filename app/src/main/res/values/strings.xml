@@ -3,9 +3,8 @@
     <string name="label_action_bar_main_activity">Popular Movies</string>
     <string name="label_action_bar_detail_activity">Movie Details</string>
 
-    <!--Strings in spinner to toggle the sort order of the movies by: most popular, highest rated-->
-    <string-array name="sort_options">
-        <item name="mostPopularOption">Most Popular</item>
-        <item name="highestRatedOption">Highest Rated</item>
-    </string-array>
+    <!--Strings in menu to toggle the sort order of the movies by: most popular, highest rated, and to show favorite movies -->
+    <string name="most_popular_setting">Most Popular</string>
+    <string name="highest_rated_setting">Highest Rated</string>
+    <string name="favorite_movies_setting">My Favorite Movies</string>
 </resources>
