@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="general_padding">16dp</dimen>
+    <dimen name="general_margin">32dp</dimen>
     <dimen name="spinner_padding_left">8dp</dimen>
     <dimen name="item_height">300dp</dimen>
     <dimen name="spinner_height">48dp</dimen>
     <dimen name="movie_poster_width">175dp</dimen>
     <dimen name="movie_poster_height">250dp</dimen>
     <dimen name="tv_padding_top">30dp</dimen>
+    <dimen name="divider_height">1dp</dimen>
+    <dimen name="margin_in_review">4dp</dimen>
+
+    <dimen name="button_width">120dp</dimen>
+    <dimen name="button_height">54dp</dimen>
 </resources>

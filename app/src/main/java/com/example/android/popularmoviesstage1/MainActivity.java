@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -55,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
         // Use GridLayoutManager
         int numberOfColumns = 2;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+
+        // Set the action bar back button to look like an up button
+        ActionBar actionBar = this.getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         if (isOnline ()) {
             //Default to Popular Query Sort
@@ -173,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             try {
-                // Call method to change string of movie data to an ARRAY OD MOVIE OBJECTS
+                // Call method to change string of movie data to an ARRAY OF MOVIE OBJECTS
                 return changeMoviesDataToArray (movieResults);
             } catch (JSONException e) {
                 e.printStackTrace ();

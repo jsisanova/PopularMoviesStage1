@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Layout of the single item in reviews RecyclerView, in this case movie review-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <!--Name of the author of review-->
+    <TextView
+        android:id="@+id/review_author_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="Review author"
+        android:textSize="18sp"
+        android:textStyle="bold|italic" />
+
+    <!--Review content-->
+    <TextView
+        android:id="@+id/review_body_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_in_review"
+        tools:text="texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext"
+        android:textSize="16sp" />
+
+    <!--Button to see full review-->
+    <Button
+        android:id="@+id/full_review_button"
+        android:layout_width="@dimen/button_width"
+        android:layout_height="@dimen/button_height"
+        android:layout_marginTop="@dimen/general_padding"
+        android:textColor="@color/backgroundColor"
+        android:background="@color/colorPrimary"
+        android:text="@string/full_review_button"
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
+
+    <!--Divider-->
+    <View
+        android:id="@+id/review_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/margin_in_review"
+        android:background="@color/colorAccent" />
+</LinearLayout>
