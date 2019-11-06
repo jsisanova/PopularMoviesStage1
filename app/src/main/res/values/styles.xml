@@ -53,4 +53,13 @@
         <item name="android:textColor">@color/backgroundColor</item>
         <item name="android:textAllCaps">true</item>
     </style>
+
+    <!--Divider style-->
+    <style name="DividerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/divider_height</item>
+        <item name="android:layout_marginTop">@dimen/general_padding</item>
+        <item name="android:layout_marginBottom">@dimen/general_padding</item>
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
 </resources>

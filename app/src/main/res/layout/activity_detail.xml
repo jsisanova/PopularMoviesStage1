@@ -99,17 +99,13 @@
         <!--Divider-->
         <View
             android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/divider_height"
-            android:layout_marginTop="@dimen/general_padding"
-            android:background="@color/colorPrimary" />
+            style="@style/DividerStyle" />
 
         <!--Caption for reviews-->
         <TextView
             android:id="@+id/reviews_caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/general_padding"
             android:fontFamily="sans-serif-condensed"
             android:text="@string/reviews_caption"
             android:textAlignment="center"
@@ -123,6 +119,16 @@
             android:id="@+id/reviews_rv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/general_margin" />
+            android:paddingTop="@dimen/general_padding" />
+
+        <!--Text no reviews, in case there are no items in recycler view-->
+        <TextView
+            android:id="@+id/no_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/no_reviews"
+            android:visibility="gone"
+            android:textStyle="italic"
+            android:paddingBottom="@dimen/general_padding"/>
     </LinearLayout>
 </ScrollView>

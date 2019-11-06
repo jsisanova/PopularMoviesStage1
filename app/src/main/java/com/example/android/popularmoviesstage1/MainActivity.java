@@ -3,11 +3,9 @@ package com.example.android.popularmoviesstage1;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,11 +17,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -108,33 +103,34 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Get the ID from the MenuItem
-        int id = item.getItemId ();
+        int id = item.getItemId();
         if (id == R.id.most_popular_setting) {
-            new FetchDataAsyncTask ().execute(MOST_POPULAR_QUERY);
+            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
         } else if (id == R.id.highest_rated_setting) {
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
         } else {
             // TODO: Add later my favorite movies intent
             new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
         }
-        return super.onOptionsItemSelected (item);
+        return super.onOptionsItemSelected(item);
     }
 
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS
     public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
-        // JSON FILTERS
-        final String RESULTS = "results";
+        // JSON FILTERS / Database API query parameters
+        final String RESULTS_QUERY = "results";
 
-        final String ORIGINAL_TITLE = "original_title";
-        final String POSTER_PATH = "poster_path";
-        final String VOTER_AVERAGE = "vote_average";
-        final String RELEASE_DATE = "release_date";
-        final String OVERVIEW = "overview";
+        final String ORIGINAL_TITLE_QUERY = "original_title";
+        final String POSTER_PATH_QUERY = "poster_path";
+        final String VOTER_AVERAGE_QUERY = "vote_average";
+        final String RELEASE_DATE_QUERY = "release_date";
+        final String OVERVIEW_QUERY = "overview";
+        final String MOVIE_ID_QUERY = "id";
 
         // Get results as an array
         JSONObject moviesJson = new JSONObject(moviesJsonResults);
-        JSONArray resultsArray = moviesJson.getJSONArray(RESULTS);
+        JSONArray resultsArray = moviesJson.getJSONArray(RESULTS_QUERY);
 
         // Create array of Movie objects that stores data from the JSON string
         movies = new Movie[resultsArray.length()];
@@ -148,11 +144,13 @@ public class MainActivity extends AppCompatActivity {
             JSONObject movieInfo = resultsArray.getJSONObject(i);
 
             // Store data in movie object
-            movies[i].setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE));
-            movies[i].setPosterPath(movieInfo.getString(POSTER_PATH));
-            movies[i].setOverview(movieInfo.getString(OVERVIEW));
-            movies[i].setVoterAverage(movieInfo.getDouble(VOTER_AVERAGE));
-            movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE));
+            movies[i].setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE_QUERY));
+            movies[i].setPosterPath(movieInfo.getString(POSTER_PATH_QUERY));
+            movies[i].setOverview(movieInfo.getString(OVERVIEW_QUERY));
+            movies[i].setVoterAverage(movieInfo.getDouble(VOTER_AVERAGE_QUERY));
+            movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE_QUERY));
+
+            movies[i].setMovieId (movieInfo.getInt(MOVIE_ID_QUERY));
         }
         return movies;
     }

@@ -40,8 +40,5 @@
     <!--Divider-->
     <View
         android:id="@+id/review_divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="@dimen/margin_in_review"
-        android:background="@color/colorAccent" />
+        style="@style/DividerStyle" />
 </LinearLayout>

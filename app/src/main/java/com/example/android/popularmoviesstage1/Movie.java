@@ -10,6 +10,12 @@ public class Movie implements Parcelable {
     private Double voteAverage;
     private String releaseDate;
 
+    private int movieId;
+    private String trailerPath;
+    private String reviewAuthor;
+    private String reviewBody;
+    private String reviewUrl;
+
     final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
     public Movie()  {
@@ -31,6 +37,21 @@ public class Movie implements Parcelable {
     public String getOverview() {
         return overview;
     }
+    public int getMovieId() {
+        return movieId;
+    }
+    public String getTrailerPath() {
+        return trailerPath;
+    }
+    public String getReviewAuthor() {
+        return reviewAuthor;
+    }
+    public String getReviewBody() {
+        return reviewBody;
+    }
+    public String getReviewUrl() {
+        return reviewUrl;
+    }
 
     // Setter methods
     public void setOriginalTitle(String originalTitle) {
@@ -48,6 +69,21 @@ public class Movie implements Parcelable {
     public void setOverview(String overview) {
         this.overview = overview;
     }
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
+    }
+    public void setTrailerPath(String trailerPath) {
+        this.trailerPath = trailerPath;
+    }
+    public void setReviewAuthor(String reviewAuthor) {
+        this.reviewAuthor = reviewAuthor;
+    }
+    public void setReviewBody(String reviewBody) {
+        this.reviewBody = reviewBody;
+    }
+    public void setReviewUrl(String reviewUrl) {
+        this.reviewUrl = reviewUrl;
+    }
 
 
     // Use Android Parcelable interface to transfer object and its data between activities
@@ -60,6 +96,11 @@ public class Movie implements Parcelable {
         dest.writeDouble(voteAverage);
         dest.writeString(releaseDate);
         dest.writeString(overview);
+        dest.writeString(trailerPath);
+        dest.writeInt (movieId);
+        dest.writeString (reviewAuthor);
+        dest.writeString (reviewBody);
+        dest.writeString (reviewUrl);
     }
 
     // This method is the constructor, called on the receiving activity, where you will be collecting values.
@@ -75,6 +116,11 @@ public class Movie implements Parcelable {
         voteAverage = parcel.readDouble();
         releaseDate = parcel.readString();
         overview = parcel.readString();
+        trailerPath = parcel.readString();
+        movieId = parcel.readInt ();
+        reviewAuthor = parcel.readString ();
+        reviewBody = parcel.readString ();
+        reviewUrl = parcel.readString ();
     }
 
     // This method binds everything together. There’s little needed to do here as the createFromParcel method will return newly populated object.

@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesstage1;
 
 import android.net.Uri;
+import android.provider.SyncStateContract;
 import android.util.Log;
 
 import java.io.IOException;
@@ -12,12 +13,13 @@ import java.util.Scanner;
 
 public class JsonUtils {
     final static String MOVIEDB_BASE_URL = "https://api.themoviedb.org/3/movie";
+    final static String API_KEY_QUERY_PARAM = "api_key";
     final static String API_KEY = BuildConfig.ApiKey;;
 
     public static URL buildUrl(String[] query) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
                 .appendPath(query[0])
-                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter(API_KEY_QUERY_PARAM, API_KEY)
                 .build();
 
         URL url = null;
@@ -28,6 +30,23 @@ public class JsonUtils {
         }
         return url;
     }
+
+    public static URL buildMovieIdUrl(String id, String query) {
+        Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
+                .appendPath(id)
+                .appendPath(query)
+                .appendQueryParameter(API_KEY_QUERY_PARAM, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(builtUri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
+    }
+
 
     public static String makeHttpRequest(URL url) throws IOException {
         HttpURLConnection urlConnection = null;
