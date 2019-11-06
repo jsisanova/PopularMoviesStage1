@@ -1,6 +1,8 @@
 package com.example.android.popularmoviesstage1;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -56,8 +58,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         // Replace the contents of the view with that element
         holder.reviewAuthorTv.setText(movies[position].getReviewAuthor());
         holder.reviewBodyTv.setText(movies[position].getReviewBody());
+
+        // Open url to see the full review
         holder.fullReviewButton.setOnClickListener((View v) -> {
-            Toast.makeText(this.context, "Will be implemented later", Toast.LENGTH_SHORT).show();
+            Intent reviewIntent = new Intent(Intent.ACTION_VIEW);
+            reviewIntent.setData(Uri.parse(movies[position].getReviewUrl()));
+            // Add the additional flags to the intent
+            reviewIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(reviewIntent);
         });
 
         // Set visibility of divider to GONE by last item
