@@ -1,9 +1,19 @@
 package com.example.android.popularmoviesstage1;
 
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+// Room will generate a table named "movie"
+// Our class is now entity that is associated with table named "movie"
+@Entity(tableName = "movie")
 public class Movie implements Parcelable {
+    // Annotate the dbMovieId as PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    private int dbMovieId;
+
     private String originalTitle;
     private String posterPath;
     private String overview;
@@ -16,7 +26,11 @@ public class Movie implements Parcelable {
     private String reviewBody;
     private String reviewUrl;
 
-    final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
+    private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
+
+    @Ignore
+    private boolean isFavoriteMovie = false;
+
 
     public Movie()  {
     }
@@ -52,8 +66,14 @@ public class Movie implements Parcelable {
     public String getReviewUrl() {
         return reviewUrl;
     }
+    public boolean getIsFavoriteMovie() {
+        return isFavoriteMovie;
+    }
 
     // Setter methods
+    public void setDbMovieId(int dbMovieId) {
+        this.dbMovieId = movieId;
+    }
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
@@ -83,6 +103,9 @@ public class Movie implements Parcelable {
     }
     public void setReviewUrl(String reviewUrl) {
         this.reviewUrl = reviewUrl;
+    }
+    public void setIsFavoriteMovie(boolean isFavoriteMovie) {
+        this.isFavoriteMovie = isFavoriteMovie;
     }
 
 

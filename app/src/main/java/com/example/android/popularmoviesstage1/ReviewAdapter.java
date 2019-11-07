@@ -58,7 +58,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         holder.reviewAuthorTv.setText(movies[position].getReviewAuthor());
         holder.reviewBodyTv.setText(movies[position].getReviewBody());
 
-        // Open url to see the full review
+        // Open url to see the full review on themoviedb.org
         holder.fullReviewButton.setOnClickListener((View v) -> {
             Intent reviewIntent = new Intent(Intent.ACTION_VIEW);
             reviewIntent.setData(Uri.parse(movies[position].getReviewUrl()));

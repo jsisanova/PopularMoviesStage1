@@ -82,8 +82,10 @@ public class DetailActivity extends AppCompatActivity {
 
 
         // execute TrailerAsyncTask
+        // To fetch trailers youmake a request to the /movie/{id}/videos endpoint.
         new TrailerAsyncTask(trailerButton).execute(String.valueOf(movie.getMovieId()), VIDEO_QUERY);
         // execute ReviewsAsyncTask
+        // To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
         new ReviewsAsyncTask().execute(String.valueOf(movie.getMovieId()), REVIEW_URL_QUERY);
 
         // Favorite movies button
@@ -147,6 +149,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     // Youtube video intent - source: https://stackoverflow.com/questions/574195/android-youtube-app-play-video-intent
+    // Use an Intent to open a youtube link in a web browser
     public static void watchYoutubeVideo(Context context, String id){
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_APP_BASE + id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(YOUTUBE_BASE_URL + id));
