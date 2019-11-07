@@ -110,21 +110,25 @@ public class DetailActivity extends AppCompatActivity {
 
                 JSONObject root = new JSONObject(movieSearchResults);
                 JSONArray resultsArray = root.getJSONArray (RESULTS_QUERY);
-                movies = new Movie[resultsArray.length()];
 
-                for (int i = 0; i < resultsArray.length(); i++) {
-                    // Initialize each object before it can be used
-                    movies[i] = new Movie();
+                if (resultsArray.length () == 0) {
+                    return null;
+                } else {
+                    movies = new Movie[resultsArray.length()];
 
-                    // Object contains all tags we're looking for
-                    JSONObject movieInfo = resultsArray.getJSONObject(i);
+                    for (int i = 0; i < resultsArray.length(); i++) {
+                        // Initialize each object before it can be used
+                        movies[i] = new Movie();
 
-                    // Store data in movie object, get the key
-                    movies[i].setTrailerPath(movieInfo.getString(VIDEO_TRAILER_KEY));
+                        // Object contains all tags we're looking for
+                        JSONObject movieInfo = resultsArray.getJSONObject(i);
+
+                        // Store data in movie object, get the key
+                        movies[i].setTrailerPath(movieInfo.getString(VIDEO_TRAILER_KEY));
+                    }
+                    // Returns only the first trailer from the results array, since there can be multiple trailers
+                    return movies[0].getTrailerPath();
                 }
-                // Returns only the first trailer from the results array, since there can be multiple trailers
-                return movies[0].getTrailerPath();
-
             } catch (IOException  | JSONException e) {
                 e.printStackTrace();
             }
@@ -203,6 +207,7 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 // Set adapter on Recycler View
                 reviewRecyclerView.setAdapter(reviewAdapter);
+                reviewRecyclerView.setNestedScrollingEnabled (false);
             }
         }
     }

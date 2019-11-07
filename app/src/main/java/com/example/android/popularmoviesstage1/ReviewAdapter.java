@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder> {
     private Movie[] movies;
@@ -77,10 +76,6 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
     // Total number of items
     // Return the size of your dataset (invoked by the layout manager)
     @Override
-//    public int getItemCount() {
-//        return movies.length;
-//    }
-
     public int getItemCount() {
         if (movies == null || movies.length == 0) {
             return -1;
