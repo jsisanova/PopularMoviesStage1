@@ -17,7 +17,7 @@ public class Movie implements Parcelable {
     private String originalTitle;
     private String posterPath;
     private String overview;
-    private Double voteAverage;
+    private double voteAverage;
     private String releaseDate;
 
     private int movieId;
@@ -26,7 +26,7 @@ public class Movie implements Parcelable {
     private String reviewBody;
     private String reviewUrl;
 
-    private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
+//    private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
     @Ignore
     private boolean isFavoriteMovie = false;
@@ -36,13 +36,14 @@ public class Movie implements Parcelable {
     }
 
     // Getter methods
+    public int getDbMovieId() { return movieId; }
     public String getOriginalTitle() {
         return originalTitle;
     }
     public String getPosterPath() {
-        return POSTER_BASE_URL + posterPath;
+        return "https://image.tmdb.org/t/p/w185" + posterPath;
     }
-    public Double getVoterAverage() {
+    public double getVoterAverage() {
         return voteAverage;
     }
     public String getReleaseDate() {
@@ -80,7 +81,7 @@ public class Movie implements Parcelable {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
-    public void setVoterAverage(Double voteAverage) {
+    public void setVoterAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
     public void setReleaseDate(String releaseDate) {

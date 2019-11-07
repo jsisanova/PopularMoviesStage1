@@ -40,6 +40,8 @@ public class DetailActivity extends AppCompatActivity {
     public final static String REVIEW_BODY_QUERY = "content";
     public final static String REVIEW_URL = "url";
 
+    public final static String FROM_RATINGS = " / 10";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +70,7 @@ public class DetailActivity extends AppCompatActivity {
         Movie movie = intent.getParcelableExtra("movie");
 
         originalTitle.setText(movie.getOriginalTitle());
-        rating.setText ("Rating \n" + String.valueOf(movie.getVoterAverage ()) + " / 10");
+        rating.setText ("Rating \n" + String.valueOf(movie.getVoterAverage ()) + FROM_RATINGS);
         releaseDate.setText ("Release Date \n" + movie.getReleaseDate());
         overview.setText (movie.getOverview ());
 
