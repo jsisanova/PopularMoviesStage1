@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage1;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -40,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     // To use Snackbar
     private View coordinator_layout;
 
+    private AppDatabase mDb;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
         // Use GridLayoutManager
         int numberOfColumns = 2;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         // Set the action bar back button to look like an up button
         ActionBar actionBar = this.getSupportActionBar();
@@ -109,12 +115,26 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.highest_rated_setting) {
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
         } else {
-            // TODO: Add later my favorite movies intent
-            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+            AppExecutors.getInstance ().diskIO ().execute (new Runnable() {
+                // We will simplify this later
+                @Override
+                public void run() {
+                    final Movie[] movies = mDb.movieDao().loadAllMovies();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            adapter.setmMovie(movies);
+                            for (int i = 0; i < movies.length; i++) {
+                                Log.e("MOVIES " , "Check: " + String.valueOf (movies[i].getOriginalTitle()) + " " +String.valueOf(movies[i].getIsFavoriteMovie()) +"\n");
+                            }
+                        }
+                    });
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS
     public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
@@ -147,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
             movies[i].setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE_QUERY));
             movies[i].setPosterPath(movieInfo.getString(POSTER_PATH_QUERY));
             movies[i].setOverview(movieInfo.getString(OVERVIEW_QUERY));
-            movies[i].setVoterAverage(movieInfo.getDouble(VOTER_AVERAGE_QUERY));
+            movies[i].setVoteAverage(movieInfo.getDouble(VOTER_AVERAGE_QUERY));
             movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE_QUERY));
 
             movies[i].setMovieId (movieInfo.getInt(MOVIE_ID_QUERY));
@@ -263,5 +283,13 @@ public class MainActivity extends AppCompatActivity {
         public int getItemCount() {
             return mMovie.length;
         }
+
+        public void setmMovie(Movie[] movies) {
+            this.mMovie = movies;
+        }
+
+//        public Movie[] getMovie () {
+//            return mMovie;
+//        }
     }
 }

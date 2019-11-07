@@ -11,4 +11,6 @@
     <string name="reviews_caption">Reviews</string>
     <string name="full_review_button">full review</string>
     <string name="no_reviews">No reviews added yet</string>
+    <string name="favorite">Favorite</string>
+    <string name="unfavorite">Unfavorite</string>
 </resources>

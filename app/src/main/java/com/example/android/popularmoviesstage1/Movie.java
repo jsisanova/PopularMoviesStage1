@@ -43,7 +43,7 @@ public class Movie implements Parcelable {
     public String getPosterPath() {
         return "https://image.tmdb.org/t/p/w185" + posterPath;
     }
-    public double getVoterAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
     public String getReleaseDate() {
@@ -81,7 +81,7 @@ public class Movie implements Parcelable {
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
     }
-    public void setVoterAverage(double voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
     public void setReleaseDate(String releaseDate) {

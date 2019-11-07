@@ -3,17 +3,21 @@ package com.example.android.popularmoviesstage1;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +46,9 @@ public class DetailActivity extends AppCompatActivity {
 
     public final static String FROM_RATINGS = " / 10";
 
+    private AppDatabase mDb;
+    ToggleButton favoriteMoviesButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,12 +61,13 @@ public class DetailActivity extends AppCompatActivity {
         TextView overview = (TextView) findViewById (R.id.overview_tv);
 
         Button trailerButton = findViewById (R.id.trailer_button);
-        Button favoriteMoviesButton = findViewById (R.id.favorite_movies_button);
+        favoriteMoviesButton = findViewById (R.id.favorite_movies_button);
 
         // Set up the RecyclerView
         reviewRecyclerView = (RecyclerView) findViewById(R.id.reviews_rv);
         // Use LinearLayoutManager
         reviewRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
 
         // Collect the intent object and extract the movie class that’s been converted into a parcel in the second activity.
         // Once you’ve done this you can call the standard methods to get the data like movie title, poster etc..
@@ -70,7 +78,7 @@ public class DetailActivity extends AppCompatActivity {
         Movie movie = intent.getParcelableExtra("movie");
 
         originalTitle.setText(movie.getOriginalTitle());
-        rating.setText ("Rating \n" + String.valueOf(movie.getVoterAverage ()) + FROM_RATINGS);
+        rating.setText ("Rating \n" + String.valueOf(movie.getVoteAverage()) + FROM_RATINGS);
         releaseDate.setText ("Release Date \n" + movie.getReleaseDate());
         overview.setText (movie.getOverview ());
 
@@ -90,12 +98,67 @@ public class DetailActivity extends AppCompatActivity {
         // To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
         new ReviewsAsyncTask().execute(String.valueOf(movie.getMovieId()), REVIEW_URL_QUERY);
 
-        // Favorite movies button
-        favoriteMoviesButton.setOnClickListener((View v) -> {
-            favoriteMoviesButton.setText("Favorite movies");
+
+        mDb = AppDatabase.getInstance (getApplicationContext ());
+        // Load all saved favorite movies
+        Movie[] favoriteMovies = mDb.movieDao ().loadAllMovies ();
+
+        // Set initial button values
+        favoriteMoviesButton.setTextOn("Unfavorite");
+        favoriteMoviesButton.setTextOff("Add to favorites");
+        if(movie.getIsFavoriteMovie()) {
+            favoriteMoviesButton.setChecked (true);
+            favoriteMoviesButton.setText("Unfavorite");
+        } else {
+            favoriteMoviesButton.setChecked (false);
+            favoriteMoviesButton.setText("Add to favorites");
+        }
+
+        // Toggle
+        favoriteMoviesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // Toggle is enabled
+
+//                    movie.setIsFavoriteMovie (true);
+                    favoriteMoviesButton.getTextOn();
+                    clickOnFavoriteMoviesButton();
+                } else {
+                    // Toggle is disabled
+                    favoriteMoviesButton.setTextColor (Color.parseColor("#FFFFFF"));
+                    favoriteMoviesButton.getTextOff();
+
+                    movie.setIsFavoriteMovie (false);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.movieDao().deleteMovie(movie);
+                        }
+                    });
+                    Log.e("fav movie after delete?", String.valueOf(movie.getOriginalTitle ()) + String.valueOf(movie.getIsFavoriteMovie ()));
+                }
+            }
         });
     }
 
+
+    private void clickOnFavoriteMoviesButton() {
+
+        final Movie movie = getIntent().getParcelableExtra("movie");
+
+        AppExecutors.getInstance().diskIO().execute (new Runnable() {
+            // We will simplify this later
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.movieDao().insertMovie(movie);
+                    }
+                });
+            }
+        });
+    }
 
     // Use AsyncTask for the watch trailer button
     private class TrailerAsyncTask extends AsyncTask<String, Void, String> {
@@ -212,7 +275,8 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 // Set adapter on Recycler View
                 reviewRecyclerView.setAdapter(reviewAdapter);
-                reviewRecyclerView.setNestedScrollingEnabled (false);
+//                reviewRecyclerView.setNestedScrollingEnabled (false);
+                reviewRecyclerView.setNestedScrollingEnabled (true);
             }
         }
     }
