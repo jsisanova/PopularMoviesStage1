@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesstage1;
 
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -43,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
     private View coordinator_layout;
 
     private AppDatabase mDb;
+
+    // Poster base url to use in the getter
+    private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +118,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.highest_rated_setting) {
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
         } else {
+//            setUpViewModel();
+
             AppExecutors.getInstance ().diskIO ().execute (new Runnable() {
                 // We will simplify this later
                 @Override
@@ -123,8 +128,9 @@ public class MainActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            // Force the RecyclerView to refresh
                             adapter.notifyDataSetChanged();
-                            adapter.setmMovie(movies);
+                            adapter.setmMovies(movies);
                             for (int i = 0; i < movies.length; i++) {
                                 Log.e("MOVIES " , "Check: " + String.valueOf (movies[i].getOriginalTitle()) + " " +String.valueOf(movies[i].getIsFavoriteMovie()) +"\n");
                             }
@@ -165,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
 
             // Store data in movie object
             movies[i].setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE_QUERY));
-            movies[i].setPosterPath(movieInfo.getString(POSTER_PATH_QUERY));
+            movies[i].setPosterPath(POSTER_BASE_URL + movieInfo.getString(POSTER_PATH_QUERY));
             movies[i].setOverview(movieInfo.getString(OVERVIEW_QUERY));
             movies[i].setVoteAverage(movieInfo.getDouble(VOTER_AVERAGE_QUERY));
             movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE_QUERY));
@@ -236,23 +242,27 @@ public class MainActivity extends AppCompatActivity {
     // Otherwise AndroidRuntimeException occurs, when you initialise the adapter this way: adapter = new ImageAdapter(getApplicationContext(), movies);
     // and when you then call startActivity() from outside of an Activity context (getApplicationContext() would be a wrong type of context in this case).
     public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
-        private Movie[] mMovie;
+        private Movie[] mMovies;
         private LayoutInflater mInflater;
         private final Context mContext;
+
         // Pass data into the constructor
         public ImageAdapter(Context context, Movie[] movie) {
             this.mInflater = LayoutInflater.from(context);
             this.mContext = context;
-            this.mMovie = movie;
+            this.mMovies = movie;
         }
+
         // Store and recycle views as they are scrolled off screen
-        public class ViewHolder extends RecyclerView.ViewHolder  {
+        public class ViewHolder extends RecyclerView.ViewHolder {
             ImageView myImageView;
+
             ViewHolder(View itemView) {
                 super(itemView);
                 myImageView = itemView.findViewById(R.id.image);
             }
         }
+
         // Inflate the cell layout from xml when needed (invoked by Layout Manager)
         @NonNull
         @Override
@@ -260,36 +270,35 @@ public class MainActivity extends AppCompatActivity {
             View view = mInflater.inflate(R.layout.single_item_image, parent, false);
             return new ViewHolder(view);
         }
+
         // Bind the data to the view in each item (invoked by Layout Manager)
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            final String path = mMovie[position].getPosterPath();
+            final String path = mMovies[position].getPosterPath();
             Picasso.get()
                     .load(path)
                     .fit()
                     .error(R.drawable.ghost)
                     .placeholder(R.drawable.ghost)
                     .into(holder.myImageView);
+
             // Create your intent object inside the first activity and use the putExtra method to add the whole class as an extra.
             // (at this point parcelable starts serializing your object). If this works, the new activity will open.
             holder.itemView.setOnClickListener(view -> {
                 Intent intent = new Intent(mContext, DetailActivity.class);
-                intent.putExtra("movie", mMovie[position]);
+                intent.putExtra("movie", mMovies[position]);
                 MainActivity.this.startActivity(intent);
             });
         }
+
         // Total number of items
         @Override
         public int getItemCount() {
-            return mMovie.length;
+            return mMovies.length;
         }
 
-        public void setmMovie(Movie[] movies) {
-            this.mMovie = movies;
+        public void setmMovies(Movie[] movies) {
+            this.mMovies = movies;
         }
-
-//        public Movie[] getMovie () {
-//            return mMovie;
-//        }
     }
 }

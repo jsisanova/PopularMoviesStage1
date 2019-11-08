@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -90,7 +89,6 @@ public class DetailActivity extends AppCompatActivity {
                 .placeholder(R.drawable.ghost)
                 .into(poster);
 
-
         // execute TrailerAsyncTask
         // To fetch trailers youmake a request to the /movie/{id}/videos endpoint.
         new TrailerAsyncTask(trailerButton).execute(String.valueOf(movie.getMovieId()), VIDEO_QUERY);
@@ -100,18 +98,16 @@ public class DetailActivity extends AppCompatActivity {
 
 
         mDb = AppDatabase.getInstance (getApplicationContext ());
-        // Load all saved favorite movies
-        Movie[] favoriteMovies = mDb.movieDao ().loadAllMovies ();
 
-        // Set initial button values
-        favoriteMoviesButton.setTextOn("Unfavorite");
-        favoriteMoviesButton.setTextOff("Add to favorites");
+        // Set initial favorite movies button values
+        favoriteMoviesButton.setTextOn(getString(R.string.unfavorite_button_text));
+        favoriteMoviesButton.setTextOff(getString(R.string.add_to_favorites_button_text));
         if(movie.getIsFavoriteMovie()) {
             favoriteMoviesButton.setChecked (true);
-            favoriteMoviesButton.setText("Unfavorite");
+            favoriteMoviesButton.setText(getString(R.string.unfavorite_button_text));
         } else {
             favoriteMoviesButton.setChecked (false);
-            favoriteMoviesButton.setText("Add to favorites");
+            favoriteMoviesButton.setText(getString(R.string.add_to_favorites_button_text));
         }
 
         // Toggle
@@ -122,10 +118,11 @@ public class DetailActivity extends AppCompatActivity {
 
 //                    movie.setIsFavoriteMovie (true);
                     favoriteMoviesButton.getTextOn();
+                    // insert movie
                     clickOnFavoriteMoviesButton();
                 } else {
                     // Toggle is disabled
-                    favoriteMoviesButton.setTextColor (Color.parseColor("#FFFFFF"));
+                    favoriteMoviesButton.setBackgroundColor (Color.parseColor("#FFFFFF"));
                     favoriteMoviesButton.getTextOff();
 
                     movie.setIsFavoriteMovie (false);
@@ -135,12 +132,10 @@ public class DetailActivity extends AppCompatActivity {
                             mDb.movieDao().deleteMovie(movie);
                         }
                     });
-                    Log.e("fav movie after delete?", String.valueOf(movie.getOriginalTitle ()) + String.valueOf(movie.getIsFavoriteMovie ()));
                 }
             }
         });
     }
-
 
     private void clickOnFavoriteMoviesButton() {
 

@@ -7,10 +7,12 @@
     <string name="most_popular_setting">Most Popular</string>
     <string name="highest_rated_setting">Highest Rated</string>
     <string name="favorite_movies_setting">My Favorite Movies</string>
+
     <string name="trailer_button">watch trailer</string>
-    <string name="reviews_caption">Reviews</string>
     <string name="full_review_button">full review</string>
+    <string name="add_to_favorites_button_text">Add to favorites</string>
+    <string name="unfavorite_button_text">Unfavorite</string>
+
+    <string name="reviews_caption">Reviews</string>
     <string name="no_reviews">No reviews added yet</string>
-    <string name="favorite">Favorite</string>
-    <string name="unfavorite">Unfavorite</string>
 </resources>

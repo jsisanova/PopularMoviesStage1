@@ -26,9 +26,6 @@ public class Movie implements Parcelable {
     private String reviewBody;
     private String reviewUrl;
 
-//    private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
-
-    @Ignore
     private boolean isFavoriteMovie = false;
 
 
@@ -41,7 +38,7 @@ public class Movie implements Parcelable {
         return originalTitle;
     }
     public String getPosterPath() {
-        return "https://image.tmdb.org/t/p/w185" + posterPath;
+        return posterPath;
     }
     public double getVoteAverage() {
         return voteAverage;

@@ -1,19 +1,14 @@
 package com.example.android.popularmoviesstage1;
 
-import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 // Create DB that uses entities and it's DAOs
 // = (list of classes that we annotated as entities, version that we will increment by updating the DB, exportSchema is optional and we are not going to use it)
-@Database(entities = {Movie.class}, version = 1, exportSchema = false)
-
-
+@Database(entities = {Movie.class}, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName ();
     private static final Object LOCK = new Object();
@@ -31,6 +26,13 @@ public abstract class AppDatabase extends RoomDatabase {
                 sInstance = Room.databaseBuilder (context.getApplicationContext (),
                         AppDatabase.class, AppDatabase.DATABASE_NAME)
                         .allowMainThreadQueries()
+                        /* If you don’t want to provide migrations, clear database when you upgrade the version
+                        *
+                        * With Room, if you change the database schema but don’t upgrade the version, your app will crash.
+                        * If you upgrade the version but don’t provide any migrations your app will crash or, DB tables are dropped and your users lose data.
+                        *
+                        * Source: https://medium.com/androiddevelopers/understanding-migrations-with-room-f01e04b07929 */
+                        .fallbackToDestructiveMigration()
                         .build ();
             }
         }
@@ -39,6 +41,4 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     public abstract MovieDao movieDao();
-
-
 }

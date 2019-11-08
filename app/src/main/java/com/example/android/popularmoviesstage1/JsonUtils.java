@@ -1,7 +1,6 @@
 package com.example.android.popularmoviesstage1;
 
 import android.net.Uri;
-import android.provider.SyncStateContract;
 import android.util.Log;
 
 import java.io.IOException;
@@ -31,6 +30,7 @@ public class JsonUtils {
         return url;
     }
 
+    // for trailers and reviews
     public static URL buildMovieIdUrl(String id, String query) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()
                 .appendPath(id)

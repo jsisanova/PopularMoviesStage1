@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesstage1;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -10,6 +11,7 @@ import android.arch.persistence.room.Query;
 public interface MovieDao {
     // The fact that we can request objects back, makes Room 'object relational mapping - ORL' library
     @Query("SELECT * FROM movie")
+//    LiveData<Movie[]> loadAllMovies();
     Movie[] loadAllMovies();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
@@ -17,4 +19,7 @@ public interface MovieDao {
 
     @Delete
     void deleteMovie(Movie movie);
+
+    @Query("SELECT * FROM movie WHERE movieId = :movieId")
+    LiveData<Movie> loadMovieById(int movieId);
 }
