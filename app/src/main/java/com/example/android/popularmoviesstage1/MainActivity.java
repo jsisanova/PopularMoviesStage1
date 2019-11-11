@@ -1,10 +1,12 @@
 package com.example.android.popularmoviesstage1;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -118,28 +120,18 @@ public class MainActivity extends AppCompatActivity {
         } else if (id == R.id.highest_rated_setting) {
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
         } else {
-//            setUpViewModel();
-
-            AppExecutors.getInstance ().diskIO ().execute (new Runnable() {
-                // We will simplify this later
-                @Override
-                public void run() {
-                    final Movie[] movies = mDb.movieDao().loadAllMovies();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            // Force the RecyclerView to refresh
-                            adapter.notifyDataSetChanged();
-                            adapter.setmMovies(movies);
-                            for (int i = 0; i < movies.length; i++) {
-                                Log.e("MOVIES " , "Check: " + String.valueOf (movies[i].getOriginalTitle()) + " " +String.valueOf(movies[i].getIsFavoriteMovie()) +"\n");
-                            }
-                        }
-                    });
-                }
-            });
+            setUpViewModel();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    // Load all movies
+    public void setUpViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getMovies().observe(this, (Movie[] movies) -> {
+            adapter.notifyDataSetChanged();
+            adapter.setmMovies(movies);
+        });
     }
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS

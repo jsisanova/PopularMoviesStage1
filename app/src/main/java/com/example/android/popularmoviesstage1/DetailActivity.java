@@ -1,5 +1,9 @@
 package com.example.android.popularmoviesstage1;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.app.AppCompatActivity;
@@ -45,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public final static String FROM_RATINGS = " / 10";
 
+    private Movie movie;
     private AppDatabase mDb;
     ToggleButton favoriteMoviesButton;
 
@@ -74,7 +80,7 @@ public class DetailActivity extends AppCompatActivity {
         if (intent == null) {
             closeOnError();
         }
-        Movie movie = intent.getParcelableExtra("movie");
+        movie = intent.getParcelableExtra("movie");
 
         originalTitle.setText(movie.getOriginalTitle());
         rating.setText ("Rating \n" + String.valueOf(movie.getVoteAverage()) + FROM_RATINGS);
@@ -102,30 +108,24 @@ public class DetailActivity extends AppCompatActivity {
         // Set initial favorite movies button values
         favoriteMoviesButton.setTextOn(getString(R.string.unfavorite_button_text));
         favoriteMoviesButton.setTextOff(getString(R.string.add_to_favorites_button_text));
-        if(movie.getIsFavoriteMovie()) {
-            favoriteMoviesButton.setChecked (true);
-            favoriteMoviesButton.setText(getString(R.string.unfavorite_button_text));
-        } else {
-            favoriteMoviesButton.setChecked (false);
-            favoriteMoviesButton.setText(getString(R.string.add_to_favorites_button_text));
-        }
+
+        setUpFavoriteMovieButton();
 
         // Toggle
         favoriteMoviesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // Toggle is enabled
-
-//                    movie.setIsFavoriteMovie (true);
+                    favoriteMoviesButton.setBackgroundColor(getColor(R.color.colorAccent));
                     favoriteMoviesButton.getTextOn();
                     // insert movie
                     clickOnFavoriteMoviesButton();
                 } else {
                     // Toggle is disabled
-                    favoriteMoviesButton.setBackgroundColor (Color.parseColor("#FFFFFF"));
+                    favoriteMoviesButton.setBackgroundColor(getColor(R.color.textColor));
                     favoriteMoviesButton.getTextOff();
 
-                    movie.setIsFavoriteMovie (false);
+                    // Delete movie
                     AppExecutors.getInstance().diskIO().execute(new Runnable() {
                         @Override
                         public void run() {
@@ -137,6 +137,7 @@ public class DetailActivity extends AppCompatActivity {
         });
     }
 
+    // Insert movie
     private void clickOnFavoriteMoviesButton() {
 
         final Movie movie = getIntent().getParcelableExtra("movie");
@@ -151,6 +152,28 @@ public class DetailActivity extends AppCompatActivity {
                         mDb.movieDao().insertMovie(movie);
                     }
                 });
+            }
+        });
+    }
+
+    // Load movie by id
+    private void setUpFavoriteMovieButton () {
+        MovieDetailsViewModelFactory factory = new MovieDetailsViewModelFactory (mDb, movie.getMovieId());
+        final MovieDetailsViewModel viewModel = ViewModelProviders.of(this, factory).get(MovieDetailsViewModel.class);
+
+        // Observe the LiveData object in the ViewModel. Use it also when removing the observer
+        viewModel.getMovie().observe(this, new Observer<Movie>() {
+            @Override
+            public void onChanged(@Nullable Movie dbMovie) {
+                viewModel.getMovie().removeObserver(this);
+
+                if (dbMovie == null) {
+                    favoriteMoviesButton.setChecked (false);
+                } else if ((movie.getMovieId() == dbMovie.getMovieId()) && !favoriteMoviesButton.isChecked ()){
+                    favoriteMoviesButton.setChecked (true);
+                } else {
+                    favoriteMoviesButton.setChecked (false);
+                }
             }
         });
     }

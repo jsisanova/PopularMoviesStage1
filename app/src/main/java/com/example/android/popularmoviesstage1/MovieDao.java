@@ -11,8 +11,7 @@ import android.arch.persistence.room.Query;
 public interface MovieDao {
     // The fact that we can request objects back, makes Room 'object relational mapping - ORL' library
     @Query("SELECT * FROM movie")
-//    LiveData<Movie[]> loadAllMovies();
-    Movie[] loadAllMovies();
+    LiveData<Movie[]> loadAllMovies();
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertMovie(Movie movie);
