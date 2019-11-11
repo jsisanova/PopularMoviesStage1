@@ -5,15 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +47,10 @@ public class MainActivity extends AppCompatActivity {
     // Poster base url to use in the getter
     private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
+    private int selectedItem;
+    private Parcelable mListState;
+    private RecyclerView.LayoutManager mLayoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
         // Use GridLayoutManager
         int numberOfColumns = 2;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        mLayoutManager = new GridLayoutManager(this, numberOfColumns);
+        recyclerView.setLayoutManager(mLayoutManager);
 
         mDb = AppDatabase.getInstance(getApplicationContext());
+
+        if(savedInstanceState != null) {
+            selectedItem = savedInstanceState.getInt("OPTION");
+        }
 
         // Set the action bar back button to look like an up button
         ActionBar actionBar = this.getSupportActionBar();
@@ -96,10 +104,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+//    @Override
+//    protected void onSaveInstanceState(Bundle outState) {
+//        super.onSaveInstanceState(outState);
+//    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        super.onSaveInstanceState (outState);
+
+        outState.putInt("OPTION", selectedItem);
+        // Save list state
+        mListState = mLayoutManager.onSaveInstanceState();
+        outState.putParcelable("LIST_STATE_KEY", mListState);
     }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle outState) {
+        selectedItem = outState.getInt ("OPTION");
+
+        // Retrieve list state and list/item positions
+        if(outState != null)
+            mListState = outState.getParcelable("LIST_STATE_KEY");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
+        }
+    }
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -116,14 +153,18 @@ public class MainActivity extends AppCompatActivity {
         // Get the ID from the MenuItem
         int id = item.getItemId();
         if (id == R.id.most_popular_setting) {
+            selectedItem = id;
             new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
         } else if (id == R.id.highest_rated_setting) {
+            selectedItem = id;
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
         } else {
+            selectedItem = id;
             setUpViewModel();
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     // Load all movies
     public void setUpViewModel() {

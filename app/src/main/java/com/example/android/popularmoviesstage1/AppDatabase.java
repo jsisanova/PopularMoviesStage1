@@ -8,7 +8,7 @@ import android.util.Log;
 
 // Create DB that uses entities and it's DAOs
 // = (list of classes that we annotated as entities, version that we will increment by updating the DB, exportSchema is optional and we are not going to use it)
-@Database(entities = {Movie.class}, version = 3, exportSchema = false)
+@Database(entities = {Movie.class}, version = 9, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
     private static final String LOG_TAG = AppDatabase.class.getSimpleName ();
     private static final Object LOCK = new Object();

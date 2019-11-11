@@ -10,9 +10,6 @@ import android.os.Parcelable;
 // Our class is now entity that is associated with table named "movie"
 @Entity(tableName = "movie")
 public class Movie implements Parcelable {
-    // Annotate the dbMovieId as PrimaryKey
-    @PrimaryKey(autoGenerate = true)
-    private int dbMovieId;
 
     private String originalTitle;
     private String posterPath;
@@ -20,20 +17,19 @@ public class Movie implements Parcelable {
     private double voteAverage;
     private String releaseDate;
 
+    // Annotate the dbMovieId as PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int movieId;
     private String trailerPath;
     private String reviewAuthor;
     private String reviewBody;
     private String reviewUrl;
 
-    private boolean isFavoriteMovie = false;
-
 
     public Movie()  {
     }
 
     // Getter methods
-    public int getDbMovieId() { return movieId; }
     public String getOriginalTitle() {
         return originalTitle;
     }
@@ -64,14 +60,8 @@ public class Movie implements Parcelable {
     public String getReviewUrl() {
         return reviewUrl;
     }
-    public boolean getIsFavoriteMovie() {
-        return isFavoriteMovie;
-    }
 
     // Setter methods
-    public void setDbMovieId(int dbMovieId) {
-        this.dbMovieId = movieId;
-    }
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
     }
@@ -101,9 +91,6 @@ public class Movie implements Parcelable {
     }
     public void setReviewUrl(String reviewUrl) {
         this.reviewUrl = reviewUrl;
-    }
-    public void setIsFavoriteMovie(boolean isFavoriteMovie) {
-        this.isFavoriteMovie = isFavoriteMovie;
     }
 
 
