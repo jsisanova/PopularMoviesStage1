@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -13,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,9 +47,9 @@ public class MainActivity extends AppCompatActivity {
     // Poster base url to use in the getter
     private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
-    private int selectedItem;
-    private Parcelable mListState;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private int selected = -1;
+    MenuItem menuItem;
+    private static final String OPTIONS = "OPTIONS";
 
 
     @Override
@@ -62,13 +62,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Use GridLayoutManager
         int numberOfColumns = 2;
-        mLayoutManager = new GridLayoutManager(this, numberOfColumns);
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         mDb = AppDatabase.getInstance(getApplicationContext());
 
-        if(savedInstanceState != null) {
-            selectedItem = savedInstanceState.getInt("OPTION");
+        // Restore bundle in onCreate
+        if (savedInstanceState != null && savedInstanceState.containsKey(OPTIONS)) {
+            selected = savedInstanceState.getInt(OPTIONS);
         }
 
         // Set the action bar back button to look like an up button
@@ -100,49 +100,43 @@ public class MainActivity extends AppCompatActivity {
             textView.setTextColor(Color.YELLOW);
 
             snackbar.show();
-//            Toast.makeText(getApplicationContext (), "Currently there is no internet connection.", Toast.LENGTH_SHORT).show();
         }
     }
 
-//    @Override
-//    protected void onSaveInstanceState(Bundle outState) {
-//        super.onSaveInstanceState(outState);
-//    }
-
+    // Override onSaveInstanceState to persist data across Activity recreation (after rotation...)
+    // Store anything you want in the bundle
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState (outState);
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
 
-        outState.putInt("OPTION", selectedItem);
-        // Save list state
-        mListState = mLayoutManager.onSaveInstanceState();
-        outState.putParcelable("LIST_STATE_KEY", mListState);
+        // Using the key, put the selected in the outState Bundle
+        // Save off the currently selected value:
+        savedInstanceState.putInt(OPTIONS, selected);
     }
 
-    @Override
-    protected void onRestoreInstanceState(Bundle outState) {
-        selectedItem = outState.getInt ("OPTION");
 
-        // Retrieve list state and list/item positions
-        if(outState != null)
-            mListState = outState.getParcelable("LIST_STATE_KEY");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (mListState != null) {
-            mLayoutManager.onRestoreInstanceState(mListState);
-        }
-    }
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu
         MenuInflater inflater = getMenuInflater ();
         inflater.inflate(R.menu.menu_main, menu);
+
+        if (selected == -1){
+            return true;
+        }
+        // re-select the previously selected item
+        switch (selected) {
+            case R.id.highest_rated_setting:
+                menuItem = (MenuItem) menu.findItem(R.id.highest_rated_setting);
+                menuItem.setChecked(true);
+                break;
+
+            case R.id.favorite_movies_setting:
+                menuItem = (MenuItem) menu.findItem(R.id.favorite_movies_setting);
+                menuItem.setChecked(true);
+                break;
+        }
 
         // Return true to display this menu
         return true;
@@ -153,14 +147,20 @@ public class MainActivity extends AppCompatActivity {
         // Get the ID from the MenuItem
         int id = item.getItemId();
         if (id == R.id.most_popular_setting) {
-            selectedItem = id;
             new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
-        } else if (id == R.id.highest_rated_setting) {
-            selectedItem = id;
+        }
+        if (id == R.id.highest_rated_setting) {
+            // Update the currently selected item
+            selected = id;
+            item.setChecked(true);
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
-        } else {
-            selectedItem = id;
+            return true;
+        }
+        if (id == R.id.favorite_movies_setting){
+            selected = id;
+            item.setChecked(true);
             setUpViewModel();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
