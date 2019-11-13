@@ -13,6 +13,8 @@ import java.util.Scanner;
 public class JsonUtils {
     final static String MOVIEDB_BASE_URL = "https://api.themoviedb.org/3/movie";
     final static String API_KEY_QUERY_PARAM = "api_key";
+    // The app uses the Movie Database API. To run the app, you need to request a free API key from themoviedb.org.
+    // Create your account here: https://www.themoviedb.org/account/signup . Enter the API key here.
     final static String API_KEY = BuildConfig.ApiKey;;
 
     public static URL buildUrl(String[] query) {

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
@@ -30,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,14 +44,18 @@ public class MainActivity extends AppCompatActivity {
     // To use Snackbar
     private View coordinator_layout;
 
-    private AppDatabase mDb;
+//    private AppDatabase mDb;
 
     // Poster base url to use in the getter
     private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
+
     private int selected = -1;
     MenuItem menuItem;
     private static final String OPTIONS = "OPTIONS";
+
+    private Parcelable mListState;
+    private RecyclerView.LayoutManager mLayoutManager;
 
 
     @Override
@@ -62,13 +68,19 @@ public class MainActivity extends AppCompatActivity {
 
         // Use GridLayoutManager
         int numberOfColumns = 2;
-        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+//        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
+        mLayoutManager = new GridLayoutManager(this, numberOfColumns);
+        recyclerView.setLayoutManager(mLayoutManager);
 
-        mDb = AppDatabase.getInstance(getApplicationContext());
+//        mDb = AppDatabase.getInstance(getApplicationContext());
 
         // Restore bundle in onCreate
-        if (savedInstanceState != null && savedInstanceState.containsKey(OPTIONS)) {
-            selected = savedInstanceState.getInt(OPTIONS);
+//        if (savedInstanceState != null && savedInstanceState.containsKey(OPTIONS)) {
+//            selected = savedInstanceState.getInt(OPTIONS);
+////            Log.e("TAG", "Test: myTest");
+//        }
+        if(savedInstanceState != null) {
+            mListState = savedInstanceState.getParcelable("OPTION");
         }
 
         // Set the action bar back button to look like an up button
@@ -103,16 +115,43 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Source : https://stackoverflow.com/questions/30177137/how-to-save-instance-state-of-selected-radiobutton-on-menu
     // Override onSaveInstanceState to persist data across Activity recreation (after rotation...)
     // Store anything you want in the bundle
-    @Override
-    protected void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
+//    @Override
+//    protected void onSaveInstanceState(Bundle savedInstanceState) {
+//        super.onSaveInstanceState(savedInstanceState);
+//
+//        // Using the key, put the selected in the outState Bundle
+//        // Save off the currently selected value:
+//        savedInstanceState.putInt(OPTIONS, selected);
+//    }
 
-        // Using the key, put the selected in the outState Bundle
-        // Save off the currently selected value:
-        savedInstanceState.putInt(OPTIONS, selected);
+    protected void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        // Save list state
+        mListState = mLayoutManager.onSaveInstanceState();
+        state.putParcelable(OPTIONS, mListState);
     }
+
+    protected void onRestoreInstanceState(Bundle state) {
+        super.onRestoreInstanceState(state);
+
+        // Retrieve list state and list/item positions
+        if(state != null)
+            mListState = state.getParcelable(OPTIONS);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mListState != null) {
+            mLayoutManager.onRestoreInstanceState(mListState);
+        }
+    }
+
 
 
 
@@ -152,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.highest_rated_setting) {
             // Update the currently selected item
             selected = id;
+            Log.e("LOG", "My new test: ");
             item.setChecked(true);
             new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
             return true;
