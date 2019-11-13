@@ -1,7 +1,7 @@
-# PopularMoviesStage1
+# PopularMoviesStage1 and Stage2
 
 ## Project Overview
-Popular Movies Stage 1, created as a part of Udacity Android Developer Nanodegree Program.
+Popular Movies Stage 1 & Stage 2, created as a part of Udacity Android Developer Nanodegree Program.
 In this project, I built an app to help users discover the most popular and top rated movies.
 
 Please note : The app uses the Movie Database API. To run the app, you need to request a free API key from themoviedb.org. Create your account here: https://www.themoviedb.org/account/signup
