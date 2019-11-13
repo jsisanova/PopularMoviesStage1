@@ -21,7 +21,7 @@ Enter the API key in the file JsonUtils.java where it says "Enter your API key h
       - you’ll allow users to read reviews of a selected movie
       - you’ll also allow users to mark a movie as a favorite by tapping a button
       
-![ezgif com-resize](https://user-images.githubusercontent.com/30228915/68777335-c49cdc80-0631-11ea-9a7b-fa5e3458698f.gif)
+![ezgif com-resize (1)](https://user-images.githubusercontent.com/30228915/68778072-f1052880-0632-11ea-9877-4e083b733585.gif)
 
 
 ## What Will I Practise?
