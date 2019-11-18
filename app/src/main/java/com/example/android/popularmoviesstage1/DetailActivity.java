@@ -293,7 +293,6 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 // Set adapter on Recycler View
                 reviewRecyclerView.setAdapter(reviewAdapter);
-//                reviewRecyclerView.setNestedScrollingEnabled (false);
                 reviewRecyclerView.setNestedScrollingEnabled (true);
             }
         }
