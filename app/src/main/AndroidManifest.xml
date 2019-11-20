@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <!--Add the launch mode "single top" to the MainActivity - when you open MainActivity,-->
         <!--it will take you back to the already opened activity, not generate a new one-->
         <activity

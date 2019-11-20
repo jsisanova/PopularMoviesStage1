@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageAdapter adapter;
     private RecyclerView recyclerView;
     private Movie[] movies;
-//    private List<Movie> movies = new ArrayList<>();
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
@@ -48,19 +47,9 @@ public class MainActivity extends AppCompatActivity {
     // Poster base url to use in the getter
     private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
-
-    private int selected = -1;
-    MenuItem menuItem;
-
-    private Parcelable mMovieState;
-    private RecyclerView.LayoutManager mLayoutManager;
-
+    // Fields to handle screen rotation
     private String savedSortType;
-    private Parcelable mListState;
-    private static final String OPTIONS = "OPTIONS";
     private static final String SORT_BY_KEY = "sort_key";
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,49 +61,30 @@ public class MainActivity extends AppCompatActivity {
 
         // Use GridLayoutManager
         int numberOfColumns = 2;
-//        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
-        mLayoutManager = new GridLayoutManager(this, numberOfColumns);
-        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
         // Restore bundle in onCreate
-//        if (savedInstanceState != null && savedInstanceState.containsKey(OPTIONS)) {
-//            selected = savedInstanceState.getInt(OPTIONS);
-////            Log.e("TAG", "Test: myTest");
-//        }
-//        if(savedInstanceState != null) {
-//           mMovieState = savedInstanceState.getParcelable(OPTIONS);
-//
-////           movies = savedInstanceState.getParcelableArray(OPTIONS);
-//           movies = (Movie[]) savedInstanceState.getParcelableArray(OPTIONS);
-//        }
-
         savedSortType = MOST_POPULAR_QUERY;
-
         if (savedInstanceState != null) {
-            mListState = savedInstanceState.getParcelable(OPTIONS);
             savedSortType = savedInstanceState.getString(SORT_BY_KEY, HIGHEST_RATED_QUERY);
         }
 
 
         if (isOnline ()) {
-            //Default to Popular Query Sort
-//            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+            // Query according to selected item in options menu
             new FetchDataAsyncTask().execute(savedSortType);
         } else {
             coordinator_layout = (View) findViewById(R.id.coordinator_layout);
             Snackbar snackbar = Snackbar
                     .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RETRY", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
-                            snackbar1.show();
-                        }
+                    .setAction("RETRY", view -> {
+                        Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
                     });
-            // Changing message text color ("RETRY")
+            // Changing message text color (= "RETRY")
             snackbar.setActionTextColor(Color.RED);
 
-            // Changing action button text color ("Currently there is no internet connection.")
+            // Changing action button text color (= "Currently there is no internet connection.")
             View sbView = snackbar.getView();
             TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
             textView.setTextColor(Color.YELLOW);
@@ -123,83 +93,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(SORT_BY_KEY, savedSortType);
-        mListState = mLayoutManager.onSaveInstanceState();
-        outState.putParcelable(OPTIONS, mListState);
-    }
-
-
-
-    // Source : https://stackoverflow.com/questions/30177137/how-to-save-instance-state-of-selected-radiobutton-on-menu
     // Override onSaveInstanceState to persist data across Activity recreation (after rotation...)
     // Store anything you want in the bundle
-//    @Override
-//    protected void onSaveInstanceState(Bundle savedInstanceState) {
-//        super.onSaveInstanceState(savedInstanceState);
-//
-//        // Using the key, put the selected in the outState Bundle
-//        // Save off the currently selected value:
-//        savedInstanceState.putInt(OPTIONS, selected);
-//    }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // Using the key, save the savedSortType in the outState Bundle - current selected item in option menu
+        outState.putString(SORT_BY_KEY, savedSortType);
 
-//    protected void onSaveInstanceState(Bundle state) {
-//        super.onSaveInstanceState(state);
-//
-//        state.putParcelableArray(OPTIONS, movies);
-//
-//        // Save list state
-//        mMovieState = mLayoutManager.onSaveInstanceState();
-//        state.putParcelable(OPTIONS, mMovieState);
-//    }
-
-
-//    protected void onRestoreInstanceState(Bundle state) {
-//        super.onRestoreInstanceState(state);
-//
-//        // Retrieve list state and list/item positions
-//        if(state != null)
-//            mMovieState = state.getParcelable(OPTIONS);
-//
-////            movies = state.getParcelableArray(OPTIONS);
-//            movies = (Movie[]) state.getParcelableArray(OPTIONS);
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//
-//        if (mMovieState != null) {
-//            mLayoutManager.onRestoreInstanceState(mMovieState);
-//        }
-//    }
-
-
-
+        super.onSaveInstanceState(outState);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu
         MenuInflater inflater = getMenuInflater ();
         inflater.inflate(R.menu.menu_main, menu);
-
-        if (selected == -1){
-            return true;
-        }
-        // re-select the previously selected item
-        switch (selected) {
-            case R.id.highest_rated_setting:
-                menuItem = (MenuItem) menu.findItem(R.id.highest_rated_setting);
-                menuItem.setChecked(true);
-                break;
-
-            case R.id.favorite_movies_setting:
-                menuItem = (MenuItem) menu.findItem(R.id.favorite_movies_setting);
-                menuItem.setChecked(true);
-                break;
-        }
 
         // Return true to display this menu
         return true;
@@ -209,32 +117,27 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Get the ID from the MenuItem
         int id = item.getItemId();
-        if (id == R.id.most_popular_setting) {
-            new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+        switch (id) {
+            case R.id.most_popular_setting:
+                savedSortType = MOST_POPULAR_QUERY;
+                new FetchDataAsyncTask().execute(MOST_POPULAR_QUERY);
+                return true;
+            case R.id.highest_rated_setting:
+                savedSortType = HIGHEST_RATED_QUERY;
+                new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
+                return true;
+            case R.id.favorite_movies_setting:
+                setUpViewModel();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        if (id == R.id.highest_rated_setting) {
-            // Update the currently selected item
-            selected = id;
-            Log.e("LOG", "My new test: ");
-            item.setChecked(true);
-            new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
-            return true;
-        }
-        if (id == R.id.favorite_movies_setting){
-            selected = id;
-            item.setChecked(true);
-            setUpViewModel();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
-
 
     // Load all movies
     public void setUpViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         viewModel.getMovies().observe(this, (Movie[] movies) -> {
-//        viewModel.getMovies().observe(this, (List<Movie> movies) -> {
             adapter.notifyDataSetChanged();
             adapter.setmMovies(movies);
         });
@@ -242,7 +145,6 @@ public class MainActivity extends AppCompatActivity {
 
     // Change string of movie data to an ARRAY OF MOVIE OBJECTS
     public Movie[] changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
-//    public List<Movie> changeMoviesDataToArray(String moviesJsonResults) throws JSONException {
 
         // JSON FILTERS / Database API query parameters
         final String RESULTS_QUERY = "results";
@@ -260,13 +162,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Create array of Movie objects that stores data from the JSON string
         movies = new Movie[resultsArray.length()];
-//        movies = new ArrayList<Movie>(resultsArray.length());
 
         // Iterate through movies and get data
         for (int i = 0; i < resultsArray.length(); i++) {
             // Initialize each object before it can be used
             movies[i] = new Movie();
-//            movies.set(i, new Movie());
 
             // Object contains all tags we're looking for
             JSONObject movieInfo = resultsArray.getJSONObject(i);
@@ -279,16 +179,6 @@ public class MainActivity extends AppCompatActivity {
             movies[i].setReleaseDate(movieInfo.getString(RELEASE_DATE_QUERY));
 
             movies[i].setMovieId (movieInfo.getInt(MOVIE_ID_QUERY));
-
-
-//            movies.get(i).setOriginalTitle(movieInfo.getString(ORIGINAL_TITLE_QUERY));
-//            movies.get(i).setPosterPath(POSTER_BASE_URL + movieInfo.getString(POSTER_PATH_QUERY));
-//            movies.get(i).setOverview(movieInfo.getString(OVERVIEW_QUERY));
-//            movies.get(i).setVoteAverage(movieInfo.getDouble(VOTER_AVERAGE_QUERY));
-//            movies.get(i).setReleaseDate(movieInfo.getString(RELEASE_DATE_QUERY));
-//
-//            movies.get(i).setMovieId (movieInfo.getInt(MOVIE_ID_QUERY));
-
         }
         return movies;
     }
@@ -301,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected Movie[] doInBackground(String... params) {
-//        protected List<Movie> doInBackground(String... params) {
             // Holds data returned from the API
             String movieResults;
 
@@ -318,7 +207,6 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Call method to change string of movie data to an ARRAY OF MOVIE OBJECTS
-//                return changeMoviesDataToArray (movieResults);
                 return changeMoviesDataToArray (movieResults);
             } catch (JSONException e) {
                 e.printStackTrace ();
@@ -336,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
      * Make sure the app does not crash when there is no network connection (ping a server)
      * source: https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
      ***/
-
     public boolean isOnline() {
         Runtime runtime = Runtime.getRuntime();
         try {
@@ -357,13 +244,11 @@ public class MainActivity extends AppCompatActivity {
     // and when you then call startActivity() from outside of an Activity context (getApplicationContext() would be a wrong type of context in this case).
     public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
         private Movie[] mMovies;
-//        private List<Movie> mMovies;
         private LayoutInflater mInflater;
         private final Context mContext;
 
         // Pass data into the constructor
         public ImageAdapter(Context context, Movie[] movie) {
-//        public ImageAdapter(Context context, ArrayList<Movie> movie) {
             this.mInflater = LayoutInflater.from(context);
             this.mContext = context;
             this.mMovies = movie;
@@ -391,7 +276,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final String path = mMovies[position].getPosterPath();
-//            final String path = mMovies.get(position).getPosterPath();
             Picasso.get()
                     .load(path)
                     .fit()
@@ -404,7 +288,6 @@ public class MainActivity extends AppCompatActivity {
             holder.itemView.setOnClickListener(view -> {
                 Intent intent = new Intent(mContext, DetailActivity.class);
                 intent.putExtra("movie", mMovies[position]);
-//                intent.putExtra("movie", mMovies.get(position));
                 MainActivity.this.startActivity(intent);
             });
         }
@@ -413,14 +296,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getItemCount() {
             return mMovies.length;
-//            return mMovies.size();
         }
 
         public void setmMovies(Movie[] movies) {
             this.mMovies = movies;
         }
-//        public void setmMovies(List<Movie> movies) {
-//            this.mMovies = movies;
-//        }
     }
 }
