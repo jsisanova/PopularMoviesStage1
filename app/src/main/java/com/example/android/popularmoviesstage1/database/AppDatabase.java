@@ -1,10 +1,12 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.database;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.util.Log;
+
+import com.example.android.popularmoviesstage1.model.Movie;
 
 // Create DB that uses entities and it's DAOs
 // = (list of classes that we annotated as entities, version that we will increment by updating the DB, exportSchema is optional and we are not going to use it)

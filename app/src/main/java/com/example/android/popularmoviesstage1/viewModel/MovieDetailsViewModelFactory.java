@@ -1,7 +1,9 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.viewModel;
 
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
+
+import com.example.android.popularmoviesstage1.database.AppDatabase;
 
 // In MovieDao loadMovieById(int id) we need id parameter, that's why we need also ViewModelFactory
 public class MovieDetailsViewModelFactory extends ViewModelProvider.NewInstanceFactory {

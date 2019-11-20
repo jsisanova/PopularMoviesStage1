@@ -1,18 +1,16 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.activity;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +20,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.popularmoviesstage1.viewModel.MainViewModel;
+import com.example.android.popularmoviesstage1.R;
+import com.example.android.popularmoviesstage1.model.Movie;
+import com.example.android.popularmoviesstage1.network.JsonUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -30,10 +32,13 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+
+//    beim Klicken auf "Favorites", eine dritte Value für "savedSortType" geben und dann in OnCreate Methode (nachdem du die Werte von savedInstanceState wider nimmst)
+//    prüfen ob "savedSortType" gleich "Favorites" rufst du setUpViewModel() sonst rufst du FetchDataAsyncTask()
+//    Aber nicht vergessen den Adapter zu initialisieren in "setUpViewModel" damit du keine NullPointerException bekommst.
 
     private ImageAdapter adapter;
     private RecyclerView recyclerView;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final String MOST_POPULAR_QUERY = "popular";
     private final String HIGHEST_RATED_QUERY = "top_rated";
+    private final String FAVORITE_QUERY = "favorite";
     // To use Snackbar
     private View coordinator_layout;
 
@@ -65,31 +71,39 @@ public class MainActivity extends AppCompatActivity {
 
         // Restore bundle in onCreate
         savedSortType = MOST_POPULAR_QUERY;
+        // Handle rotation when item highest rated in options menu is selected
         if (savedInstanceState != null) {
             savedSortType = savedInstanceState.getString(SORT_BY_KEY, HIGHEST_RATED_QUERY);
         }
+        // Handle rotation when item favorite in options menu is selected
+        if (savedInstanceState != null) {
+            savedSortType = savedInstanceState.getString(SORT_BY_KEY, FAVORITE_QUERY);
+        }
 
-
-        if (isOnline ()) {
-            // Query according to selected item in options menu
-            new FetchDataAsyncTask().execute(savedSortType);
+        if (savedSortType == FAVORITE_QUERY) {
+            setUpViewModel();
         } else {
-            coordinator_layout = (View) findViewById(R.id.coordinator_layout);
-            Snackbar snackbar = Snackbar
-                    .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("RETRY", view -> {
-                        Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
-                        snackbar1.show();
-                    });
-            // Changing message text color (= "RETRY")
-            snackbar.setActionTextColor(Color.RED);
+            if (isOnline()) {
+                // Query according to selected item in options menu
+                new FetchDataAsyncTask().execute(savedSortType);
+            } else {
+                coordinator_layout = (View) findViewById(R.id.coordinator_layout);
+                Snackbar snackbar = Snackbar
+                        .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("RETRY", view -> {
+                            Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
+                            snackbar1.show();
+                        });
+                // Changing message text color (= "RETRY")
+                snackbar.setActionTextColor(Color.RED);
 
-            // Changing action button text color (= "Currently there is no internet connection.")
-            View sbView = snackbar.getView();
-            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-            textView.setTextColor(Color.YELLOW);
+                // Changing action button text color (= "Currently there is no internet connection.")
+                View sbView = snackbar.getView();
+                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+                textView.setTextColor(Color.YELLOW);
 
-            snackbar.show();
+                snackbar.show();
+            }
         }
     }
 
@@ -127,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 new FetchDataAsyncTask().execute(HIGHEST_RATED_QUERY);
                 return true;
             case R.id.favorite_movies_setting:
+                savedSortType = FAVORITE_QUERY;
                 setUpViewModel();
                 return true;
             default:
@@ -134,12 +149,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     // Load all movies
     public void setUpViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        adapter = new ImageAdapter(getApplicationContext(), movies);
+        recyclerView.setAdapter(adapter);
+
         viewModel.getMovies().observe(this, (Movie[] movies) -> {
             adapter.notifyDataSetChanged();
             adapter.setmMovies(movies);
+
+            // Show this text, if there are no favorite movies
+            if (adapter.getItemCount() == 0) {
+                recyclerView.setVisibility(View.GONE);
+                // Invisible textview in favorite movies screen, visible just when there are no favorite movies selected
+                TextView invisibleTv = findViewById(R.id.invisible_tv);
+                invisibleTv.setVisibility(View.VISIBLE);
+            }
         });
     }
 
@@ -217,6 +245,10 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(Movie[] movies) {
             adapter = new ImageAdapter(getApplicationContext(), movies);
             recyclerView.setAdapter(adapter);
+
+            recyclerView.setVisibility(View.VISIBLE);
+            TextView invisibleTv = findViewById(R.id.invisible_tv);
+            invisibleTv.setVisibility(View.GONE);
         }
     }
 
@@ -240,8 +272,8 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Make the Adapter an inner class of the MainActivity (so it has access to the activity directly and you can start another one easily).
-    // Otherwise AndroidRuntimeException occurs, when you initialise the adapter this way: adapter = new ImageAdapter(getApplicationContext(), movies);
-    // and when you then call startActivity() from outside of an Activity context (getApplicationContext() would be a wrong type of context in this case).
+// Otherwise AndroidRuntimeException occurs, when you initialise the adapter this way: adapter = new ImageAdapter(getApplicationContext(), movies);
+// and when you then call startActivity() from outside of an Activity context (getApplicationContext() would be a wrong type of context in this case).
     public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ViewHolder> {
         private Movie[] mMovies;
         private LayoutInflater mInflater;

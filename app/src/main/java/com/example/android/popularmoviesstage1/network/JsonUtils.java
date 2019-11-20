@@ -1,7 +1,9 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.network;
 
 import android.net.Uri;
 import android.util.Log;
+
+import com.example.android.popularmoviesstage1.BuildConfig;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +17,7 @@ public class JsonUtils {
     final static String API_KEY_QUERY_PARAM = "api_key";
     // The app uses the Movie Database API. To run the app, you need to request a free API key from themoviedb.org.
     // Create your account here: https://www.themoviedb.org/account/signup . Enter the API key here.
-    final static String API_KEY = BuildConfig.ApiKey;;
+    final static String API_KEY = BuildConfig.ApiKey;
 
     public static URL buildUrl(String[] query) {
         Uri builtUri = Uri.parse(MOVIEDB_BASE_URL).buildUpon()

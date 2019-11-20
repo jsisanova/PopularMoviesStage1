@@ -17,7 +17,7 @@
         <!--Add the launch mode "single top" to the MainActivity - when you open MainActivity,-->
         <!--it will take you back to the already opened activity, not generate a new one-->
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:launchMode="singleTop"
             android:label="@string/label_action_bar_main_activity">
             <intent-filter>
@@ -28,8 +28,8 @@
         </activity>
 
         <activity
-            android:name=".DetailActivity"
+            android:name=".activity.DetailActivity"
             android:label="@string/label_action_bar_detail_activity"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".activity.MainActivity"/>
     </application>
 </manifest>

@@ -1,12 +1,12 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.model;
 
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-// Room will generate a table named "movie"
+// Database is implemented using Room.
+// Room will generate a database table named "movie"
 // Our class is now entity that is associated with table named "movie"
 @Entity(tableName = "movie")
 public class Movie implements Parcelable {

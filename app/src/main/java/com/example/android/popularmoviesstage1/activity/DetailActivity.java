@@ -1,13 +1,10 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.activity;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +20,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.android.popularmoviesstage1.database.AppExecutors;
+import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModel;
+import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModelFactory;
+import com.example.android.popularmoviesstage1.R;
+import com.example.android.popularmoviesstage1.ReviewAdapter;
+import com.example.android.popularmoviesstage1.database.AppDatabase;
+import com.example.android.popularmoviesstage1.model.Movie;
+import com.example.android.popularmoviesstage1.network.JsonUtils;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -52,7 +57,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private Movie movie;
     private AppDatabase mDb;
-    ToggleButton favoriteMoviesButton;
+    private ToggleButton favoriteMoviesButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,14 +94,13 @@ public class DetailActivity extends AppCompatActivity {
 
         Picasso.get()
                 .load(movie.getPosterPath())
-//                .load("http://i.imgur.com/DvpvklR.png")
                 .fit()
                 .error(R.drawable.ghost)
                 .placeholder(R.drawable.ghost)
                 .into(poster);
 
         // execute TrailerAsyncTask
-        // To fetch trailers youmake a request to the /movie/{id}/videos endpoint.
+        // To fetch trailers you make a request to the /movie/{id}/videos endpoint.
         new TrailerAsyncTask(trailerButton).execute(String.valueOf(movie.getMovieId()), VIDEO_QUERY);
         // execute ReviewsAsyncTask
         // To fetch reviews you will want to make a request to the /movie/{id}/reviews endpoint
@@ -112,6 +116,8 @@ public class DetailActivity extends AppCompatActivity {
         setUpFavoriteMovieButton();
 
         // Toggle
+        // Mark a movie as a favorite in the details view by tapping a button.
+        // This is for a local movies collection that you will maintain and does not require an API request.
         favoriteMoviesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -250,7 +256,7 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-
+    // Allow users to read reviews of a selected movie
     private class ReviewsAsyncTask extends AsyncTask<String, Void, Movie[]> {
         @Override
         protected Movie[] doInBackground(String... strings) {

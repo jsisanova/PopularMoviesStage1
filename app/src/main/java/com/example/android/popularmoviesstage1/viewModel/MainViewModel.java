@@ -1,12 +1,12 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.viewModel;
 
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.android.popularmoviesstage1.database.AppDatabase;
+import com.example.android.popularmoviesstage1.model.Movie;
 
 public class MainViewModel extends AndroidViewModel {
     private static final String TAG = MainViewModel.class.getSimpleName();
@@ -27,3 +27,4 @@ public class MainViewModel extends AndroidViewModel {
         return movies;
     }
 }
+

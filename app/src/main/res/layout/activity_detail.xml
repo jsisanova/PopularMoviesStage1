@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--Wrap Layout in ScrollView in case there is eg. longer overwiew text-->
+<!--Wrap Layout in ScrollView in case there is eg. longer overview text-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.example.android.popularmoviesstage1.DetailActivity">
+    tools:context="com.example.android.popularmoviesstage1.activity.DetailActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -15,4 +15,5 @@
 
     <string name="reviews_caption">Reviews</string>
     <string name="no_reviews">No reviews added yet</string>
+    <string name="invisible_favorite_text">No favorite movies yet\n\nFeel free to add them by pressing the favorite button</string>
 </resources>

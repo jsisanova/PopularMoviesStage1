@@ -1,7 +1,10 @@
-package com.example.android.popularmoviesstage1;
+package com.example.android.popularmoviesstage1.viewModel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+
+import com.example.android.popularmoviesstage1.database.AppDatabase;
+import com.example.android.popularmoviesstage1.model.Movie;
 
 // Make this class extend ViewModel (not AndroidViewModel bcs we use factory - bcs we need movieId)
 public class MovieDetailsViewModel extends ViewModel{

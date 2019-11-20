@@ -6,7 +6,7 @@
     android:id="@+id/coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -16,6 +16,16 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_height="match_parent"
+            android:visibility="visible"
             android:layout_width="match_parent" />
+
+        <TextView
+            android:id="@+id/invisible_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/general_padding"
+            android:textAllCaps="true"
+            android:text="@string/invisible_favorite_text"
+            android:visibility="gone"/>
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>
