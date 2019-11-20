@@ -35,11 +35,6 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
-
-//    beim Klicken auf "Favorites", eine dritte Value für "savedSortType" geben und dann in OnCreate Methode (nachdem du die Werte von savedInstanceState wider nimmst)
-//    prüfen ob "savedSortType" gleich "Favorites" rufst du setUpViewModel() sonst rufst du FetchDataAsyncTask()
-//    Aber nicht vergessen den Adapter zu initialisieren in "setUpViewModel" damit du keine NullPointerException bekommst.
-
     private ImageAdapter adapter;
     private RecyclerView recyclerView;
     private Movie[] movies;
@@ -80,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             savedSortType = savedInstanceState.getString(SORT_BY_KEY, FAVORITE_QUERY);
         }
 
-        if (savedSortType == FAVORITE_QUERY) {
+        if (savedSortType.equals(FAVORITE_QUERY)) {
             setUpViewModel();
         } else {
             if (isOnline()) {
@@ -148,8 +143,7 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
-
+    
     // Load all movies
     public void setUpViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
