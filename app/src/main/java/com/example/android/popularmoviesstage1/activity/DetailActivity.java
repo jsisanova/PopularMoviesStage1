@@ -118,27 +118,20 @@ public class DetailActivity extends AppCompatActivity {
         // Toggle
         // Mark a movie as a favorite in the details view by tapping a button.
         // This is for a local movies collection that you will maintain and does not require an API request.
-        favoriteMoviesButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    // Toggle is enabled
-                    favoriteMoviesButton.setBackgroundColor(getColor(R.color.colorAccent));
-                    favoriteMoviesButton.getTextOn();
-                    // insert movie
-                    clickOnFavoriteMoviesButton();
-                } else {
-                    // Toggle is disabled
-                    favoriteMoviesButton.setBackgroundColor(getColor(R.color.textColor));
-                    favoriteMoviesButton.getTextOff();
+        favoriteMoviesButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Toggle is enabled
+                favoriteMoviesButton.setBackgroundColor(getColor(R.color.colorAccent));
+                favoriteMoviesButton.getTextOn();
+                // insert movie
+                clickOnFavoriteMoviesButton();
+            } else {
+                // Toggle is disabled
+                favoriteMoviesButton.setBackgroundColor(getColor(R.color.textColor));
+                favoriteMoviesButton.getTextOff();
 
-                    // Delete movie
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.movieDao().deleteMovie(movie);
-                        }
-                    });
-                }
+                // Delete movie
+                AppExecutors.getInstance().diskIO().execute(() -> mDb.movieDao().deleteMovie(movie));
             }
         });
     }
@@ -148,18 +141,7 @@ public class DetailActivity extends AppCompatActivity {
 
         final Movie movie = getIntent().getParcelableExtra("movie");
 
-        AppExecutors.getInstance().diskIO().execute (new Runnable() {
-            // We will simplify this later
-            @Override
-            public void run() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.movieDao().insertMovie(movie);
-                    }
-                });
-            }
-        });
+        AppExecutors.getInstance().diskIO().execute(() -> runOnUiThread(() -> mDb.movieDao().insertMovie(movie)));
     }
 
     // Load movie by id
@@ -200,9 +182,9 @@ public class DetailActivity extends AppCompatActivity {
                 String movieSearchResults = JsonUtils.makeHttpRequest(url);
 
                 JSONObject root = new JSONObject(movieSearchResults);
-                JSONArray resultsArray = root.getJSONArray (RESULTS_QUERY);
+                JSONArray resultsArray = root.getJSONArray(RESULTS_QUERY);
 
-                if (resultsArray.length () == 0) {
+                if (resultsArray.length() == 0) {
                     return null;
                 } else {
                     movies = new Movie[resultsArray.length()];

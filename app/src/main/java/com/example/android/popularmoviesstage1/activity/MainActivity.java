@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
     // To use Snackbar
     private View coordinator_layout;
 
-    // Poster base url to use in the getter
+    // Poster base url to use in the setter
     private final String POSTER_BASE_URL = "https://image.tmdb.org/t/p/w185";
 
     // Fields to handle screen rotation
@@ -64,41 +64,39 @@ public class MainActivity extends AppCompatActivity {
         int numberOfColumns = 2;
         recyclerView.setLayoutManager(new GridLayoutManager(this, numberOfColumns));
 
-        // Restore bundle in onCreate
         savedSortType = MOST_POPULAR_QUERY;
+        // Restore bundle in onCreate
         // Handle rotation when item highest rated in options menu is selected
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(SORT_BY_KEY)) {
             savedSortType = savedInstanceState.getString(SORT_BY_KEY, HIGHEST_RATED_QUERY);
         }
         // Handle rotation when item favorite in options menu is selected
-        if (savedInstanceState != null) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(SORT_BY_KEY)) {
             savedSortType = savedInstanceState.getString(SORT_BY_KEY, FAVORITE_QUERY);
         }
 
         if (savedSortType.equals(FAVORITE_QUERY)) {
             setUpViewModel();
+        } else if (isOnline()) {
+            // Query according to selected item in options menu
+            new FetchDataAsyncTask().execute(savedSortType);
         } else {
-            if (isOnline()) {
-                // Query according to selected item in options menu
-                new FetchDataAsyncTask().execute(savedSortType);
-            } else {
-                coordinator_layout = (View) findViewById(R.id.coordinator_layout);
-                Snackbar snackbar = Snackbar
-                        .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("RETRY", view -> {
-                            Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
-                            snackbar1.show();
-                        });
-                // Changing message text color (= "RETRY")
-                snackbar.setActionTextColor(Color.RED);
+            coordinator_layout = (View) findViewById(R.id.coordinator_layout);
+            Snackbar snackbar = Snackbar
+                    .make(coordinator_layout, "Currently there is no internet connection.", Snackbar.LENGTH_INDEFINITE)
+                    .setAction("RETRY", view -> {
+                        Snackbar snackbar1 = Snackbar.make(coordinator_layout, "Message is restored!", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
+                    });
+            // Changing message text color (= "RETRY")
+            snackbar.setActionTextColor(Color.RED);
 
-                // Changing action button text color (= "Currently there is no internet connection.")
-                View sbView = snackbar.getView();
-                TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
-                textView.setTextColor(Color.YELLOW);
+            // Changing action button text color (= "Currently there is no internet connection.")
+            View sbView = snackbar.getView();
+            TextView textView = (TextView) sbView.findViewById(android.support.design.R.id.snackbar_text);
+            textView.setTextColor(Color.YELLOW);
 
-                snackbar.show();
-            }
+            snackbar.show();
         }
     }
 
@@ -115,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu
-        MenuInflater inflater = getMenuInflater ();
+        MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
 
         // Return true to display this menu
@@ -147,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     // Load all movies
     public void setUpViewModel() {
         MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
+        // Initialize the adapter to avoid NullPointerException
         adapter = new ImageAdapter(getApplicationContext(), movies);
         recyclerView.setAdapter(adapter);
 
@@ -229,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Call method to change string of movie data to an ARRAY OF MOVIE OBJECTS
-                return changeMoviesDataToArray (movieResults);
+                return changeMoviesDataToArray(movieResults);
             } catch (JSONException e) {
                 e.printStackTrace ();
             }
@@ -302,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             final String path = mMovies[position].getPosterPath();
+            // Picasso handles loading the images on a background thread, image decompression and caching the images.
             Picasso.get()
                     .load(path)
                     .fit()

@@ -9,16 +9,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        // Make sure you enter a valid API KEY for themoviedb.org to to able to use this app
+        buildConfigField 'String', "ApiKey", PopularMovies_ApiKey
     }
     buildTypes {
-        debug {
-            buildConfigField 'String', "ApiKey", PopularMovies_ApiKey
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            // Make sure you enter a valid API KEY for themoviedb.org to to able to use this app
-            buildConfigField 'String', "ApiKey", PopularMovies_ApiKey
         }
     }
     compileOptions {

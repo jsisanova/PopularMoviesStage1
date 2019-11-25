@@ -35,12 +35,12 @@ public class AppExecutors {
             synchronized (LOCK) {
                 // diskIO is single thread executor, ensured DB transactions are done in order and we don't have race conditions
                 sInstance = new AppExecutors (Executors.newSingleThreadExecutor (),
-                        // network IO executor is a pool of 3 threads, allows to run network calls simultaneously
-                        Executors.newFixedThreadPool (3),
-                        // mainThread executor uses MainThreadExacutor class
-                        // when we are in activity, we don't need it, bcs we can use the runOnUiThread() method
-                        // when we are in different class and we don't have runOnUiThread() method, we can access the main thread using this executor
-                        new MainThreadExecutor());
+                // network IO executor is a pool of 3 threads, allows to run network calls simultaneously
+                Executors.newFixedThreadPool (3),
+                // mainThread executor uses MainThreadExacutor class
+                // when we are in activity, we don't need it, bcs we can use the runOnUiThread() method
+                // when we are in different class and we don't have runOnUiThread() method, we can access the main thread using this executor
+                new MainThreadExecutor());
             }
         }
         return sInstance;

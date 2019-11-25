@@ -17,8 +17,8 @@ public class MainViewModel extends AndroidViewModel {
     // In the constructor use the loadAllMovies of the movieDao to initialize the movies variable
     public MainViewModel(Application application) {
         super (application);
-        AppDatabase database = AppDatabase.getInstance (this.getApplication ());
-        Log.d(TAG, "Actively retrieving the movies from the DataBase");
+        AppDatabase database = AppDatabase.getInstance (this.getApplication());
+        Log.d(TAG, "Actively retrieving the movies from the Database");
         movies = database.movieDao().loadAllMovies();
     }
 

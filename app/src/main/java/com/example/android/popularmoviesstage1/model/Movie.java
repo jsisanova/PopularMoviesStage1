@@ -17,7 +17,7 @@ public class Movie implements Parcelable {
     private double voteAverage;
     private String releaseDate;
 
-    // Annotate the dbMovieId as PrimaryKey
+    // Annotate the movieId as PrimaryKey
     @PrimaryKey(autoGenerate = true)
     private int movieId;
     private String trailerPath;

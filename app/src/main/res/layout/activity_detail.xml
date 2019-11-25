@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--Wrap Layout in ScrollView in case there is eg. longer overview text-->
+<!--Wrap the layout in ScrollView in case there is eg. longer overview text-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -62,13 +62,9 @@
 
                 <!--Button to add movie to favorites-->
                 <ToggleButton
+                    style="@style/ButtonStyle"
                     android:id="@+id/favorite_movies_button"
-                    android:layout_width="@dimen/button_width"
-                    android:layout_height="@dimen/button_height"
-                    android:layout_marginTop="@dimen/general_margin"
-                    android:textColor="@color/backgroundColor"
-                    android:background="@color/colorPrimary"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="@dimen/general_margin" />
             </LinearLayout>
         </LinearLayout>
 
@@ -83,16 +79,10 @@
 
         <!--Button to watch trailer-->
         <Button
+            style="@style/ButtonStyle"
             android:id="@+id/trailer_button"
-            android:layout_width="@dimen/button_width"
-            android:layout_height="@dimen/button_height"
             android:layout_marginTop="@dimen/general_margin"
-            android:text="@string/trailer_button"
-            android:textColor="@color/backgroundColor"
-            android:background="@color/colorPrimary"
-            android:textAllCaps="true"
-            android:textAlignment="center"
-            android:textStyle="bold" />
+            android:text="@string/trailer_button" />
 
         <!--Divider-->
         <View

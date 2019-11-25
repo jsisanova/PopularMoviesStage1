@@ -29,15 +29,10 @@
 
     <!--Button to see full review-->
     <Button
+        style="@style/ButtonStyle"
         android:id="@+id/full_review_button"
-        android:layout_width="@dimen/button_width"
-        android:layout_height="@dimen/button_height"
         android:layout_marginTop="@dimen/general_padding"
-        android:textColor="@color/backgroundColor"
-        android:background="@color/colorPrimary"
-        android:text="@string/full_review_button"
-        android:textStyle="bold"
-        android:textAllCaps="true"/>
+        android:text="@string/full_review_button"/>
 
     <!--Divider-->
     <View
