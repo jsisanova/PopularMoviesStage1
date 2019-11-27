@@ -14,6 +14,7 @@ public interface MovieDao {
     // The fact that we can request objects back, makes Room 'object relational mapping - ORL' library
     @Query("SELECT * FROM movie")
     LiveData<Movie[]> loadAllMovies();
+    // Get automatic updates from a database =
     // Database is not re-queried unnecessarily. LiveData is used to observe changes in the database and update the UI accordingly.
     // Database is not re-queried unnecessarily after rotation. Cached LiveData from ViewModel is used instead.
 

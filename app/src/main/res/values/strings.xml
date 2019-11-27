@@ -16,4 +16,7 @@
     <string name="reviews_caption">Reviews</string>
     <string name="no_reviews">No reviews added yet</string>
     <string name="invisible_favorite_text">No favorite movies yet\n\nFeel free to add them by pressing the favorite button</string>
+    <string name="toast_close_on_error">Something went wrong</string>
+    <string name="snackbar_currntly_no_connection">Currently there is no internet connection</string>
+    <string name="snackbar_message_restored">Message is restored!</string>
 </resources>

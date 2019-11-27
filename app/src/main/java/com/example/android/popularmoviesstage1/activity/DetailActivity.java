@@ -9,25 +9,24 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.android.popularmoviesstage1.database.AppExecutors;
-import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModel;
-import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModelFactory;
 import com.example.android.popularmoviesstage1.R;
 import com.example.android.popularmoviesstage1.ReviewAdapter;
 import com.example.android.popularmoviesstage1.database.AppDatabase;
+import com.example.android.popularmoviesstage1.database.AppExecutors;
 import com.example.android.popularmoviesstage1.model.Movie;
 import com.example.android.popularmoviesstage1.network.JsonUtils;
+import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModel;
+import com.example.android.popularmoviesstage1.viewModel.MovieDetailsViewModelFactory;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -288,6 +287,6 @@ public class DetailActivity extends AppCompatActivity {
 
     private void closeOnError() {
         finish();
-        Toast.makeText(this, "Something went wrong.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_close_on_error), Toast.LENGTH_SHORT).show();
     }
 }
